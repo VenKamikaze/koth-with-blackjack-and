@@ -1,6 +1,6 @@
 # King of the Hill
-<pretty image>
 
+![](/images/overview.png)
 
 ### What is it about
 Capturing strategical locations throughout various regions and planets provides factions with strong presence in the area. It is your job to secure and control the hill for sufficient time in order to capture the hill.
