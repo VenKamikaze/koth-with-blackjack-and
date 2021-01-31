@@ -1,438 +1,524 @@
 
-local ScenarioUtils = import('/lua/sim/ScenarioUtilities.lua');
 local ScenarioFramework = import('/lua/ScenarioFramework.lua');
 
-local startupTime = 240;
-local radius = 40;
-local totalScoreRequiredToPwnAss = 36;
+local ModUtilities = import('/mods/King of the Hill/modules/utilities.lua');
+local ModRestrictions = import('/mods/King of the Hill/modules/restrictions.lua');
 
-local scoreData = {
-    totalScore = totalScoreRequiredToPwnAss,
-    armyScores = { },
- };
+-- load in the configurations / options
+local config = { }
 
-local thresholds = {
-    conquerThreshold = 800,
-    contestThreshold = 400,
-}
+-- the set of brains that are valid for the game mode
+local brains = { }
 
-local hillState = {
+-- the viewable related state of the hill, needs to be global to allow updating across threads
+local view = {
     active = false;
-    conquered = false,
+    controlled = false,
     contested = false,
     commanderOnHill = false,
-    brainThatConqueredHill = nil,
 };
+
+-- the state of the game mode, as partially defined by ModUtilities.FindPlayersSim(...)
+local state = {
+    scoreThreshold = 0,
+    armies = { }
+};
+
+-- the state of the thresholds, which need to be global because it is shared in a separate thread
+local thresholds = {
+    control = 800,
+    contest = 400,
+}
 
 function OnStart()
 
-    -- setup the initial score.
-    local applicableBrains = FindApplicableBrains();
-    for k, brain in applicableBrains do
+    -- load in the config
+    config = import('/mods/King of the Hill/modules/config.lua').InitialiseConfig(ScenarioInfo)
+    
+    -- retrieve the default army and brain information
+    state.scoreThreshold = config.hillPoints
+    state.armies, brains = ModUtilities.FindPlayersSim()
 
-        local data = { 
-            isDefeated = false,
-            armyIndex = brain:GetArmyIndex(), 
-            armyScore = 0,
-        };     
-
-        table.insert(scoreData.armyScores, data);
-    end
-
-    local center = ComputeMiddleOfTheMap();
-
-    -- early game message.
-    ScenarioFramework.CreateTimerTrigger(
-        function()
-            ForkThread(ComputeTresholdsThread);            
-            ForkThread(VisualizeHillThread, center);
-            Sync.SendPlayerPointData = scoreData;
-
-            Sync.SendAnnouncement = { title = "King of the hill", subTitle = "The hill will be active in " .. startupTime .. " seconds." };
-        end,
-        10,
-        true
-    );
-    -- hill is about to begin message
-    ScenarioFramework.CreateTimerTrigger(
-        function()
-            Sync.SendAnnouncement = { title = "King of the hill", subTitle = "The hill will be active in 60 seconds.." };
-        end,
-        startupTime - 60,
-        true
-    );
-
-    -- whooo!! go get them!
-    ScenarioFramework.CreateTimerTrigger(
-        function()
-            ForkThread(TickThread, center, radius);
-            Sync.SendAnnouncement = { title = "King of the hill", subTitle = "The hill is active." };
-        end,
-        startupTime,
-        true
-    );
-
-end
-
---------------------------------------------------
--- Retrieves all the armies that are controlled --
--- by a player. This is done in a similar       --
--- on the ui side.              				--
-
-function FindApplicableBrains()
-
-    local applicableBrains =  { };
-    for k, brain in ArmyBrains do
-
-        if not (brain.BrainType == "AI") then
-            table.insert(applicableBrains, brain);
+    -- start computing the thresholds
+    ForkThread(
+        function() 
+            ModUtilities.ComputeTresholdsThread(thresholds);
         end
+    )
 
+    -- start visualising the hill
+    ForkThread(
+        function() 
+            ModUtilities.VisualizeHillThread(view, config.hillCenter, config.hillRadius);
+        end
+    )
+
+    -- sync the initial data, wait one tick for the UI to build
+    ForkThread(
+        function()
+            WaitSeconds(0)
+            Sync.SendConfig = config;
+            Sync.SendPlayerPointData = state;
+        end
+    )
+
+    -- get every army, add in the restrictions
+    local identifiers = { }
+    for k, information in state.armies do 
+        table.insert(identifiers, information.identifier)
     end
 
-    return applicableBrains;
+    ModRestrictions.InitializeRestrictions(config, identifiers)
+
+    -- prepare to send out the initialisation announcements
+    ModUtilities.SendAnnouncement(
+        "King of the hill",                                                 -- title
+        "The hill is activated in " .. config.hillActiveAt .. " seconds.",  -- subtitle
+        10                                                                  -- delay
+    )
+
+    ModUtilities.SendAnnouncement(
+        "King of the hill",
+        "The hill is activated in " .. math.floor(0.5 * config.hillActiveAt) .. " seconds.",
+        math.floor(0.5 * config.hillActiveAt)
+    )
+
+    ModUtilities.SendAnnouncement(
+        "King of the hill",                                                 -- title
+        "The hill is activated in 60 seconds.",                             -- subtitle
+        config.hillActiveAt - 60                                            -- delay
+    )
+
+    ModUtilities.SendAnnouncement(
+        "King of the hill",                                                 -- title
+        "The hill is active.",                                              -- subtitle
+        config.hillActiveAt - 2                                             -- delay
+    )
+
+    -- prepare the tick of the game mode
+    ForkThread(
+        function()
+            WaitSeconds(config.hillActiveAt)
+            TickThread(view, state, brains, config.hillCenter)
+        end
+    )
+
 end
 
---------------------------------------------------
--- Slowly increases the conquer and contest     --
--- thresholds over time.                        --
-
-function ComputeTresholdsThread()
-
-    while true do
-
-        -- compute the new values
-        thresholds.conquerThreshold = 800 + 80 * math.floor(GetGameTimeSeconds() / 60);
-        thresholds.contestThreshold = thresholds.conquerThreshold / 2;
-
-        -- update the interface.
-        Sync.SendThresholds = thresholds;
-
-        WaitSeconds(60.0);
-    end
-
-end
 
 --------------------------------------------------
 -- The heart of the operation.                  --
 
-function TickThread(center, radius)
+function TickThread(view, state, brains, center)
 
-    -- keep track of the state of affairs.
-    local lastBrainOnHill = nil;
-    local ticksOfBrainOfTheHill = 0;
+    -- the amount of ticks the current identifier and its allies have
+    local ticks = 0;
 
-    -- sync the initial data
-    Sync.SendPlayerPointData = scoreData
+    -- the identifier of the brain (number)
+    local identifier = 0;
+
+    -- whether or not the hill is being controlled
+    local controlled = false
+
+    -- whether or not the hill was being contested before
+    local wasContested = false 
 
     while true do
 
         -- keep track of the fallen brains.
-        for k, scoreDatum in scoreData.armyScores do
-           local brain = ArmyBrains[scoreDatum.armyIndex];
+        for k, data in state.armies do
+           local brain = brains[data.identifier];
            if brain:IsDefeated() then
-                scoreDatum.isDefeated = true;
+                data.isDefeated = true;
            end 
         end
 
-        -- do some analysis and process it according to the
-        -- configurations provided by the options.
-        local hillDataPerBrain = AnalyseHill(center, radius);
-        hillState = ProcessAnalysisOfHill(hillDataPerBrain);
+        -- contains the raw information per brain (mass / units / commander on hill)
+        local analysis = ProcessHill(brains, center, config.hillRadius)        
 
-        -- if there is a brain that is on top of 
-        -- the mountain
-        if not hillState.contested and hillState.brainThatConqueredHill then
+        -- computes the final state of the hill
+        local interpretation = ProcessState(analysis)   
 
-            -- if we already had someone on the hill.
-            if lastBrainOnHill then
-                -- and no coup happened
-                if lastBrainOnHill.armyIndex == hillState.brainThatConqueredHill.armyIndex then
-                    ticksOfBrainOfTheHill = ticksOfBrainOfTheHill + 1;
-                -- or a coup did happen.
-                else
-                    ticksOfBrainOfTheHill = 0;
+        -- update the viewable related interpretation
+        view.active = interpretation.active 
+        view.contested = interpretation.contested
+        view.controlled = interpretation.controlled
+        view.commanderOnHill = interpretation.commanderOnHill
+
+        -- do penalties checks
+        ModUtilities.ComputePenalty(config, brains, interpretation)
+
+        -- hill is contested or left alone, reset everything
+        if interpretation.contested or not interpretation.controlled then 
+             ticks = 0
+             identifier = 0
+             controlled = false
+
+             if interpretation.contested and not wasContested then 
+                wasContested = true
+                -- send out an announcement
+                ModUtilities.SendAnnouncement(
+                    "King of the hill",
+                    "The hill is contested.",
+                    0
+                )
+             end
+        end
+
+        -- if one team is on the hill, start working!
+        if interpretation.controlled then 
+            wasContested = false
+            if not controlled then 
+                -- the hill is unoccupied
+                ticks = 0 
+                identifier = interpretation.identifier
+                controlled = true
+
+                -- send out an announcement
+                ModUtilities.SendAnnouncement(
+                    "King of the hill",
+                    "The hill is controlled by " .. ArmyBrains[identifier].Nickname .. " and her / his allies.",
+                    0
+                )
+            else
+                -- the hill is occupied, check the changes
+                if interpretation.identifier == identifier then 
+                    -- the same brain holds the hill
+                    ticks = ticks + 1
+                else  
+                    if IsAlly(interpretation.identifier, identifier) then 
+                        -- an ally took over!
+                        ticks = ticks + 1
+                        identifier = interpretation.identifier
+                    else
+                        -- an enemy took over!
+                        ticks = 0
+                        identifier = interpretation.identifier
+                    end
+                end
+            end
+        end
+
+        -- set the data for the UI
+        for k, data in state.armies do 
+
+            -- find the corresponding information of the army
+            local index = ModUtilities.FindByPredicate(analysis, function(analysis) return data.identifier == analysis.identifier end)
+            local hillInformation = analysis[index]
+
+            -- go through the data, determine what to show in the UI
+            data.isKing = controlled and (data.identifier == interpretation.identifier)
+            data.isAllyOfKing = controlled and (not data.isKing) and IsAlly(data.identifier, interpretation.identifier)
+            data.canControl = hillInformation.massOnHill > thresholds.control or hillInformation.commanderOnHill
+            data.canContest = hillInformation.massOnHill > thresholds.contest or hillInformation.commanderOnHill
+            data.massOnHill = hillInformation.massOnHill
+            data.commanderOnHill = hillInformation.commanderOnHill
+        end       
+
+        -- do we give points?
+        if controlled and ticks >= 30 then 
+
+            -- determine the amount of points we're giving.
+            local points = 1;
+            if interpretation.commanderOnHill then
+                points = 2;
+            end
+
+            -- throw points to the allies of the controller
+            for k, data in state.armies do 
+                if not data.isDefeated then
+                    -- this is the controllee, give some points!
+                    if identifier == data.identifier then 
+                        data.score = data.score + points;
+                    else
+                        -- check if it is an ally to the controllee
+                        if IsAlly(identifier, data.identifier) then 
+                            data.score = data.score + points;
+                        end
+                    end
                 end
             end
 
-            -- we now have this brain on the hill!
-            lastBrainOnHill = hillState.brainThatConqueredHill;
-        
-        else
-            -- our hill is brainless!
-            lastBrainOnHill = nil;
-            ticksOfBrainOfTheHill = 0;
-        end
+            -- reset the ticks
+            ticks = ticks - 30;
 
-
-        -- if this imperial and noble brain has been
-        -- on the hill for a while, give it a point.
-        if ticksOfBrainOfTheHill >= 25 then
-
-            -- determine the amount of points we're giving.
-            local numberOfPoints = 1;
-            if lastBrainOnHill.commanderOnHill then
-                numberOfPoints = 2;
-            end
-
-            -- throw them points!
-            scoreData.armyScores[hillState.brainThatConqueredHill.armyIndex].armyScore = scoreData.armyScores[hillState.brainThatConqueredHill.armyIndex].armyScore + numberOfPoints;
-            ticksOfBrainOfTheHill = 0;
-        end
-
-        -- check if someone has won, otherwise update the objectives.
-        if CheckWinConditions(scoreData) then
-            break;
         end
 
         -- sync with the UI.
-        Sync.SendPlayerPointData = scoreData;
+        -- LOG("King of the Hill: Sending player point data")
+        Sync.SendPlayerPointData = state;
+
+        -- check whether we have a winner with us
+        ForkThread(
+            function() 
+                -- add a little suspense
+                WaitSeconds(5.0)
+                CheckWinConditions(brains, state.armies, identifier)
+            end
+        )
+
+        -- check whether we have a winner with us
+        ForkThread(
+            function() 
+                -- add a little suspense
+                WaitSeconds(5.0)
+                ModRestrictions.CheckRestrictionConditions(config, state)
+            end
+        )
 
         WaitSeconds(1.0);
     end
 
 end
 
---------------------------------------------------
--- Performs an analysis of the units on the     --
--- hill but it doesn't do anything with the     --  
--- computed data.                               --
+--- Computes the amount of mass on the hill, the number of units on the hill and whether a commander is on the hill per brain.
+-- @param center The center of the hill
+function ProcessHill(brains, center)
 
-function AnalyseHill(center, radius)
+    local analysis = { }
+    for k, brain in brains do
 
-    local hillDataPerBrain = { }
-    for k, brain in ArmyBrains do
+        -- don't compute for defeated brains
+        if not brain:IsDefeated() then
 
-        -- find all the units
-        local cats = categories.ALLUNITS - (categories.AIR + categories.STRUCTURE + categories.ENGINEER) + categories.COMMAND;
-        local unitsOnHill = brain:GetUnitsAroundPoint(cats, center, radius, 'Ally');
+            -- find all the units
+            local cats = categories.ALLUNITS - (categories.AIR + categories.STRUCTURE + categories.ENGINEER) + categories.COMMAND;
+            local unitsOnHill = brain:GetUnitsAroundPoint(cats, center, config.hillRadius, 'Ally');
 
-        -- determine what is on the hill.
-        hillDataOfBrain = { }
-        hillDataOfBrain.armyIndex = brain:GetArmyIndex();
+            -- keep track of the brain
+            local information = { }
+            information.identifier = brain:GetArmyIndex();
 
-        local amountOfMass = 0;
-        local amountOfUnits = 0;
-        local commanderPresent = false;
-        if unitsOnHill and table.getn(unitsOnHill) > 0 then
+            -- determine what is on the hill.
+            local massOnHill = 0;
+            local unitCount = 0;
+            local commanderPresent = false;
+            if unitsOnHill and table.getn(unitsOnHill) > 0 then
 
-            -- sum up the number of units and their mass values.
-            for k, unit in unitsOnHill do
-                if not unit:IsDead() then
-                    amountOfUnits = amountOfUnits + 1;
-                    amountOfMass = amountOfMass + unit:GetBlueprint().Economy.BuildCostMass
+                -- sum up the number of units and their mass values.
+                for k, unit in unitsOnHill do
+                    if not unit:IsDead() then
+                        unitCount = unitCount + 1;
 
-                    if EntityCategoryContains(categories.COMMAND, unit) then
-                        commanderPresent = true;
+                        -- do not count in the mass value of the commander
+                        if EntityCategoryContains(categories.COMMAND, unit) then
+                            commanderPresent = true;
+                        else
+                            massOnHill = massOnHill + unit:GetBlueprint().Economy.BuildCostMass
+                        end
                     end
                 end
             end
+
+            -- store it all
+            information.commanderOnHill = commanderPresent;
+            information.massOnHill = massOnHill;
+            information.unitsOnHill = unitCount;
+
+            table.insert(analysis, information);
         end
-
-        -- keep track if there is a commander and of the 
-        -- amount of mass and units.
-        hillDataOfBrain.commanderOnHill = commanderPresent;
-        hillDataOfBrain.massOnHill = amountOfMass;
-        hillDataOfBrain.unitsOnHill = amountOfUnits;
-
-        table.insert(hillDataPerBrain, hillDataOfBrain);
     end
 
-    return hillDataPerBrain;
+    return analysis;
 end
 
---------------------------------------------------
--- Visualizes the hill for the players.         --
-
-function VisualizeHillThread(center)
-
-    local hillColors = {
-        '55ff5555',           -- (red)
-        '5555ff55',           -- (green)
-        '55aaaaaa',           -- (grey)
-    }
-
-    local radianOffset = 0.0;
-    while true do
-
-        radianOffset = radianOffset + 0.001;
-
-        if hillState.active then
-
-            -- determine the color of the inner circle.
-            local hillColor = 3;
-            if hillState.conquered then
-                hillColor = 2;
-            end
-
-            if hillState.contested then
-                hillColor = 1;
-            end
-
-            -- draw the regular circle and the inner circle.
-
-            DrawCircle(center, radius - 0.25, 0 * radianOffset, '55ffffff', 30, 0);
-            DrawCircle(center, radius - 1.25, -1 *radianOffset, hillColors[hillColor], 60, 1);
-
-            if hillState.commanderOnHill then
-                DrawCircle(center, radius - 2.25, 2 * radianOffset, '55f9e79f', 120, 2);
-            end
-
-        -- the hill is not yet active!
-        else
-            DrawCircle(center, radius - 0.25, 0 * radianOffset, '55999999', 30, 0);
-        end
-
-        WaitSeconds(0.10);
-    end
-end
-
-function DrawCircle(center, radius, radianOffset, color, numberOfPieces, pieceOffset)
-
-    -- computes a single point on the circle.
-    function ComputePoint(center, radius, radians)
-        return {
-            center[1] + radius * math.cos(radians),
-            center[2] + 0,
-            center[3] + radius * math.sin(radians),
-        };
-    end
-
-    -- computes all the points of the circle.
-    local points = { }
-    local twoPi = 3.14 * 2.0;
-    for k = 1, numberOfPieces do
-        local radians = (k - 1) / (numberOfPieces - 1) * twoPi;
-        local point = ComputePoint(center, radius, radians + radianOffset);
-        point[2] = GetSurfaceHeight(point[1], point[3]);
-        table.insert(points, point);
-    end
-
-    -- draw out all the line segments
-    for k = 1, numberOfPieces do
-
-        local a = k;
-        local b = k + 1;
-        while b > numberOfPieces do
-            b = b - numberOfPieces;
-        end
-
-        DrawLine(points[a], points[b], color);
-
-        k = k + pieceOffset;
-    end
-end
-
---------------------------------------------------
--- Determines the final state of the hill. Take --
--- note that it returns all three variables:    --  
--- whether the hill is conquered, contested and --
--- if conquered by what player.                 --
-
-function ProcessAnalysisOfHill(hillDataPerBrain)
+--- Given the information from ProcessHill(...), computes the king of the hill.
+-- @param analysis The information from ProcessHill(...).
+function ProcessState(analysis)
 
     -- we assume the hill is abandoned.
-    local hillState = { };
-    hillState.active = true;
-    hillState.conquered = false;
-    hillState.contested = false;
-    hillState.commanderOnHill = false;
-    hillState.brainThatConqueredHill = nil;
+    local state = { }
+    state.active = true
+    state.controlled = false
+    state.contested = false
+    state.commanderOnHill = false
 
-    -- go through all the hill data we found. Determine
-    -- if the hill is conquered / contested.
-    for k, hillData in hillDataPerBrain do
+    state.identifier = 0
 
-        -- the hill is both conquered and
-        -- contested. We do not need to
-        -- look any further. Nothing more will
-        -- happen.
-        if hillState.contested then
-            break;
+    -- determine if there is a commander on the hill
+    for k, information in analysis do 
+        state.commanderOnHill = state.commanderOnHill or information.commanderOnHill;
+    end
+
+    -- determine which armies can control and / or contest the hill
+    conquerers = { }
+    contesters = { }
+    for k, information in analysis do 
+        canControl = information.massOnHill >= thresholds.control or information.commanderOnHill
+        if canControl then 
+            table.insert(conquerers, information)
         end
 
-        if hillData.commanderOnHill then
-            hillState.commanderOnHill = true;
+        canContest = information.massOnHill >= thresholds.contest or information.commanderOnHill
+        if canContest then
+            table.insert(contesters, information)
         end
-    
-        -- I mean, of course we are contesting the
-        -- hill if it is conquered. But we better 
-        -- check to be sure.
-        if hillState.conquered then
+    end
 
-            if hillData.massOnHill >= thresholds.contestThreshold or hillData.commanderOnHill then
-                hillState.contested = true;
-                hillState.conquered = false;
-                hillState.brainThatConqueredHill = nil;
-            end
+    -- determine the amount of commanders on the hill
+    local commanderCount = 0
+    local commanderIndices = { }
+    for k, information in conquerers do 
+        if information.commanderOnHill then
+            commanderCount = commanderCount + 1
+            table.insert(commanderIndices, information.identifier)
+        end
+    end
 
-        -- determine if we are conquering the hill.
-        else
-            if hillData.massOnHill >= thresholds.conquerThreshold or hillData.commanderOnHill then
-                hillState.brainThatConqueredHill = hillData;
-                hillState.conquered = true;
+    -- determine if the hill is contested through commanders
+    local commanderContested = false 
+    if commanderCount > 1 then 
+        for k, cia in commanderIndices do 
+            for l, cib in commanderIndices do 
+                if not (k == l) then
+                    commanderContested = commanderContested or IsEnemy(cia, cib)
+                end
             end
         end
     end
 
-    -- if no brain conquered the hill, then this
-    -- variable is nil. Otherwise, it contains a 
-    -- brain table.
-    return hillState;
+    -- daym, so many hostile commanders on that hill
+    if commanderContested then 
+        state.controlled = false
+        state.contested = true
+        state.identifier = 0
+        return state
+    end
+
+    -- if there is only one commander on the hill, things are clear
+    local controller = nil
+    if commanderCount == 1 then 
+        -- only take conquerers with commanders
+        for k, information in conquerers do 
+            if information.commanderOnHill then 
+                controller = information 
+            end
+        end
+    end
+
+    -- if multiple (allied) commanders are on hill, take all conquerers with commanders on hill into account
+    local potentials = { }
+    if commanderCount > 1 and not controller then
+        for k, information in conquerers do 
+            if information.commanderOnHill then 
+                table.insert(potentials, information)
+            end
+        end
+    end
+
+    -- if no commanders are on hill, take all conquerers into account
+    if commanderCount == 0 and not controller then 
+        for k, information in conquerers do 
+            table.insert(potentials, information)
+        end
+    end
+
+    -- at this point we know that either all the potentials have commanders on hill,
+    -- or none of them do. Either case: the mass counts
+    if not controller then 
+        for k, information in potentials do 
+
+            -- if we don't have any controller yet, take the first one
+            if controller == nil then 
+                controller = information
+            end
+    
+            -- compare their mass values
+            if information.massOnHill > controller.massOnHill then 
+                controller = information
+            end
+        end
+    end
+
+    -- did we find anybody?
+    if controller then 
+
+        -- we assume we can control it!
+        local contested = false 
+
+        -- check alliances with other conquerers
+        for k, other in conquerers do 
+            if not (controller.identifier == other.identifier) then 
+                contested = contested or IsEnemy(controller.identifier, other.identifier)
+            end
+        end
+
+        -- check alliances with other contesters
+        for k, other in contesters do 
+            if not (controller.identifier == other.identifier) then 
+                contested = contested or IsEnemy(controller.identifier, other.identifier)
+            end
+        end
+
+        -- nahh!
+        if contested then 
+            state.controlled = false
+            state.contested = true 
+            state.identifier = 0
+            return state
+        -- yeah!
+        else
+            state.controlled = true
+            state.contested = false
+            state.identifier = controller.identifier
+            return state 
+        end
+    end
+
+    -- return the default state, no conquerers nor contesters!
+    state.controlled = false
+    state.contested = false 
+    state.identifier = 0
+    return state
+
 end
 
 --------------------------------------------------
 -- Checks whether or not a player has victoir!  --
 
-function CheckWinConditions(scoreData)
+function CheckWinConditions(brains, armies, controller)
 
-    winningArmies = { };
-    for k, winningArmy in scoreData.armyScores do
+    -- somebody is on the hill
+    if not (controller == 0) then
+        
+        -- for every bit of data on all the players
+        for k, data in armies do 
+            
+            -- do this if we have the controller
+            if data.identifier == controller then 
+                
+                -- their score is high enough
+                if data.score >= config.hillPoints then 
 
-        -- find all players that won!
-        if winningArmy.armyScore >= totalScoreRequiredToPwnAss then
-            table.insert(winningArmies, winningArmy);
-        end
-    end
+                    -- loop over the other brains, make them win or lose with the controller
+                    for l, brain in brains do 
+                        local index = brain:GetArmyIndex()
+                        if index == controller then
+                            -- brain is of the controller
+                            brain:OnVictory();
+                        else
+                            if IsAlly(index, controller) then 
+                                -- brain is of ally of controller
+                                brain:OnVictory()
+                            else
+                                -- all other brains are defeated
+                                brain:OnDefeat()
+                            end
+                        end
+                    end
 
-    -- if we have winnnneerrrss!
-    if table.getn(winningArmies) > 0 then
-
-        -- go through all the armies.
-        for k, losingArmy in scoreData.armyScores do
-
-            -- find out of this army is a w-i-n-n-e-r!
-            local isWinningArmy = false;
-            for k, winningArmy in winningArmies do
-                if winningArmy.armyIndex == losingArmy.armyIndex then
-                    isWinningArmy = true;
+                    -- wait a wee bit, then end the game.
+                    ScenarioFramework.CreateTimerTrigger(
+                        function() 
+                            EndGame();
+                        end,
+                        5,
+                        true
+                    );
                 end
             end
-
-            -- if the army is not a winner (boo!)
-            if not isWinningArmy then
-                local brain = ArmyBrains[losingArmy.armyIndex];
-                brain:OnDefeat();
-                ForkThread(DestroyAllUnitsThread, brain);
-            end
         end
-
-        Sync.SendAnnouncement = { title = "King of the hill", SubTitle = "Commander " .. winningArmies[1] .. " is the king of the hill!" };
-
-        -- wait a wee bit, then end the game.
-        ScenarioFramework.CreateTimerTrigger(
-            function() 
-                EndGame();
-            end,
-            5,
-            true
-        );
-
-        return true
-
     end
-
-    return false;
 end
 
 --------------------------------------------------
@@ -452,38 +538,4 @@ function DestroyAllUnitsThread(brain)
         WaitSeconds(Random() * 0.25);
     end
 
-end
-
---------------------------------------------------
--- Find all spawn markers on the map and then   --
--- compute the average over them. The typical   --  
--- middle of a map is not always the middle.    --
-
-function ComputeMiddleOfTheMap()
-
-    local total = { 0, 0 };
-    local markersFound = 0;
-
-    local k = 1;
-    local markerName = "ARMY_" .. k;
-    local marker = ScenarioUtils.GetMarker(markerName);
-    while marker do
-
-        if marker then
-            markersFound = markersFound  + 1;
-            local markerPosition = marker.position;
-
-            total[1] = total[1] + markerPosition[1];
-            total[2] = total[2] + markerPosition[3];
-        end
-
-        k = k + 1;
-        markerName = "ARMY_" .. k;
-        marker = ScenarioUtils.GetMarker(markerName)
-    end
-
-    local center = { total[1] / markersFound, 0, total[2] / markersFound };
-    center[2] = GetSurfaceHeight(center[1], center[3]);
-
-    return center;
 end

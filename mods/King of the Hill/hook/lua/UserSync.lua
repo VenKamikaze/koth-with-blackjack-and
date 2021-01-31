@@ -1,27 +1,38 @@
 
-
-local path = 'King of the Hill'
-local controllerUI = import('/mods/' .. path .. '/modules/controllerUI.lua');
-
+local configLoaded = false
 local baseOnSync = OnSync
 
 function OnSync()
+
+    local path = 'King of the Hill'
+    local controllerUI = import('/mods/' .. path .. '/modules/controllerUI.lua');
 
     -- don't break anything!
 	baseOnSync()
 
     -- send the player point data.
     if Sync.SendPlayerPointData then
-        controllerUI.ProcessPlayerPointData(Sync.SendPlayerPointData);
+        ForkThread(controllerUI.ProcessPlayerPointData, Sync.SendPlayerPointData)
     end
 
     -- send an announcement
     if Sync.SendAnnouncement then
-        controllerUI.ProcessAnnouncement(Sync.SendAnnouncement);
+        ForkThread(controllerUI.ProcessAnnouncement, Sync.SendAnnouncement)
     end
 
     -- send an announcement
     if Sync.SendThresholds then
-        controllerUI.ProcessThresholds(Sync.SendThresholds);
+        ForkThread(controllerUI.ProcessThresholds, Sync.SendThresholds)
+    end
+
+    -- send in the config, should happen only once!
+    if Sync.SendConfig then 
+        if configLoaded then 
+            WARN("King of the Hill: Configuration has already been loaded.")
+            return
+        end
+
+        configLoaded = true
+        ForkThread(controllerUI.ProcessConfig, Sync.SendConfig)
     end
 end 

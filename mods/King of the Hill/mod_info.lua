@@ -1,9 +1,9 @@
 name = "King of the Hill"
-uid = "9d5cb32c-c87d-44b9-abec-13bf9ddfe983"
-version = 1
+uid = "jip-koth-13"
+version = 13
 copyright = ""
 description = "Players receive points for controlling the hill. The first player to reach the point threshold wins!"
-author = "Jip"
+author = "(Jip) Willem Wijnia"
 url = ""
 
 -- Icon made by Good Ware from www.flaticon.com
@@ -15,6 +15,6 @@ exclusive = false
 ui_only = false
 requires = {}
 requiresNames = {}
-conflicts = {"a5445607-1167-4946-8fc7-e3f2f41dd2e3"}
+conflicts = {}
 before = {}
 after = {}
