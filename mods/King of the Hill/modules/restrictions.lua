@@ -63,7 +63,7 @@ function CheckRestrictionConditions(config, state)
     -- check for tech 2
     for k, information in state.armies do 
         if config.restrictedT2 then 
-            if information.score > config.restrictionsT2LiftedAt then 
+            if information.score >= config.restrictionsT2LiftedAt then 
                 config.restrictedT2 = false
 
                 local identifier = information.identifier
