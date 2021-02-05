@@ -15,6 +15,9 @@ local Tooltip = import('/lua/ui/game/tooltip.lua')
 
 local ModUtilities = import('/mods/King of the Hill/modules/utilities.lua');
 
+local Prefs = import('/lua/user/prefs.lua')
+local pixelScaleFactor = Prefs.GetFromCurrentProfile('options').ui_scale or 1
+
 local parent = false;
 interface = { };
 
@@ -126,9 +129,8 @@ function SetLayout(armies)
 	-- Make the panel and set its height according	--
 	-- to the number of players.					--
 
-	--interface.box.panel:SetTexture(UIUtil.UIFile('/game/resource-panel/resources_panel_bmp.dds'))
-	interface.box.panel.Height:Set(20 + 14 * table.getn(armies) + 20 * 14);
-	interface.box.panel.Width:Set(262);
+	LayoutHelpers.SetHeight(interface.box.panel, 20 + 14 * table.getn(armies) + 20 * 14)
+	LayoutHelpers.SetWidth(interface.box.panel, 262)
 	LayoutHelpers.AtLeftTopIn(interface.box.panel, interface.box)
 
 	interface.box.Height:Set(interface.box.panel.Height)
@@ -169,14 +171,14 @@ function SetLayout(armies)
 	interface.box.leftBottomBracket:SetTexture(UIUtil.UIFile('/game/bracket-left/bracket_bmp_b.dds'))
 
 	interface.box.leftTopBracket.Top:Set(function () return interface.box.Top() + 2 end)
-	interface.box.leftTopBracket.Left:Set(function () return interface.box.Left() - 12 end)
+	interface.box.leftTopBracket.Left:Set(function () return interface.box.Left() - 12 * pixelScaleFactor end)
 
 	interface.box.leftBottomBracket.Bottom:Set(function () return interface.box.Bottom() + 22 end)
-	interface.box.leftBottomBracket.Left:Set(function () return interface.box.Left() - 12 end)
+	interface.box.leftBottomBracket.Left:Set(function () return interface.box.Left() - 12 * pixelScaleFactor end)
 
 	interface.box.leftMiddleBracket.Top:Set(function () return interface.box.leftTopBracket.Bottom() end)
 	interface.box.leftMiddleBracket.Bottom:Set(function() return math.max(interface.box.leftTopBracket.Bottom(), interface.box.leftBottomBracket.Top()) end)
-	interface.box.leftMiddleBracket.Right:Set(function () return interface.box.leftTopBracket.Right() - 9 end)
+	interface.box.leftMiddleBracket.Right:Set(function () return interface.box.leftTopBracket.Right() - 9 * pixelScaleFactor end)
 
 	--------------------------------------------------
 	-- Construct the right bracket					--
