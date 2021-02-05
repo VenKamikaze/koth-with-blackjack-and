@@ -219,4 +219,24 @@ AIOpts =
             },	
 		},	
     },
+
+    {
+		default 	= 1,
+		label 		= "Koth: Tech unlock curve",
+		help 		= "Defines how many points you need to unlock an additional tech.",
+		key 		= 'KingOfTheHillTechCurve',
+		pref	 	= 'KingOfTheHillTechCurve',
+		values 		= {
+			{ 
+                text = "Early", 
+                help = "Tech 2 will be unlocked at 20 percent of the total points, tech 3 at 40 percent of the total points and experimentals at 60 percent of the total points.", 
+                key = 1, 
+            },	
+			{ 
+                text = "Averaged", 
+                help = "Tech 2 will be unlocked at 30 percent of the total points, tech 3 at 55 percent of the total points and experimentals at 80 percent of the total points.", 
+                key = 2, 
+            },	
+		},	
+    },
 }

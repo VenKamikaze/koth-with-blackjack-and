@@ -30,6 +30,11 @@ function InitialiseConfig(ScenarioInfo)
         config.restrictionsT3LiftedAt = 22
         config.restrictionsT4LiftedAt = 34
 
+        -- tech curve on when the restrictions should be lifted
+        config.techCurveT2 = 0.2
+        config.techCurveT3 = 0.4
+        config.techCurveT4 = 0.6
+
         -- how long it takes for other players to get the new tech
         config.techIntroductionDelay = 120
 
@@ -65,6 +70,7 @@ function InitialiseConfig(ScenarioInfo)
 
     local function DefaultRawValues(config)
         -- the raw options data
+        config.kingOfTheHillTechCurve = FindDefaultOption(options, "KingOfTheHillTechCurve")
         config.kingOfTheHillHillType = FindDefaultOption(options, "KingOfTheHillHillType")
         config.kingOfTheHillHillSize = FindDefaultOption(options, "KingOfTheHillHillSize")
         config.kingOfTheHillHillDelay = FindDefaultOption(options, "KingOfTheHillHillDelay")
@@ -81,6 +87,7 @@ function InitialiseConfig(ScenarioInfo)
 
     -- load in the actual options, if they exist / are set
     if ScenarioInfo.Options then 
+        config.kingOfTheHillTechCurve = ScenarioInfo.Options.KingOfTheHillTechCurve or config.kingOfTheHillTechCurve
         config.kingOfTheHillHillType = ScenarioInfo.Options.KingOfTheHillHillType or config.kingOfTheHillHillType
         config.kingOfTheHillHillSize = ScenarioInfo.Options.KingOfTheHillHillSize or config.kingOfTheHillHillSize
         config.kingOfTheHillHillDelay = ScenarioInfo.Options.KingOfTheHillHillDelay or config.kingOfTheHillHillDelay
@@ -89,6 +96,16 @@ function InitialiseConfig(ScenarioInfo)
         config.kingOfTheHillHillUnit = ScenarioInfo.Options.KingOfTheHillHillUnit or config.kingOfTheHillHillUnit
         config.kingOfTheHillHillPenalty = ScenarioInfo.Options.KingOfTheHillHillPenalty or config.kingOfTheHillHillPenalty
         config.kingOfTheHillHillTechIntroductionDelay = ScenarioInfo.Options.KingOfTheHillHillTechIntroductionDelay or config.kingOfTheHillHillTechIntroductionDelay
+    end
+
+    function InterpretTechCurve(kingOfTheHillTechCurve)
+
+        local values = {
+            { 0.2, 0.4, 0.6 },
+            { 0.3, 0.55, 0.8 }
+        }
+
+        return unpack (values[kingOfTheHillTechCurve])
     end
 
     function InterpretSize(kingOfTheHillHillSize)
@@ -143,7 +160,7 @@ function InitialiseConfig(ScenarioInfo)
     end
 
     function InterpretScore(kingOfTheHillHillScore)
-        return 20 + 10 * kingOfTheHillHillScore
+        return 10 + 10 * kingOfTheHillHillScore
     end
 
     function InterpretUnit(kingOfTheHillHillUnit)
@@ -160,15 +177,19 @@ function InitialiseConfig(ScenarioInfo)
         return 60 + 60 * kingOfTheHillHillDelay 
     end
 
+    LOG(repr(config))
+
     -- interpret the options set manually
     config.hillActiveAt = InterpretDelay(config.kingOfTheHillHillDelay)
     config.hillCenter = InterpretCenter(config.kingOfTheHillHillCenter)
     config.hillRadius = InterpretSize(config.kingOfTheHillHillSize)
-    config.techIntroductionDelay = InterpretTechDelay(config.kingOfTheHillHillDelay)
+    config.techIntroductionDelay = InterpretTechDelay(config.kingOfTheHillHillTechIntroductionDelay)
     config.hillPoints = InterpretScore(config.kingOfTheHillHillScore)
-    config.restrictionsT2LiftedAt = math.floor(0.2 * config.hillPoints)
-    config.restrictionsT3LiftedAt = math.floor(0.5 * config.hillPoints)
-    config.restrictionsT4LiftedAt = math.floor(0.8 * config.hillPoints)
+    config.techCurveT2, config.techCurveT3, config.techCurveT4 = InterpretTechCurve(config.kingOfTheHillTechCurve)
+    config.restrictionsT2LiftedAt = math.floor(config.techCurveT2 * config.hillPoints)
+    config.restrictionsT3LiftedAt = math.floor(config.techCurveT3 * config.hillPoints)
+    config.restrictionsT4LiftedAt = math.floor(config.techCurveT4 * config.hillPoints)
+
     config.hillUnit = InterpretUnit(config.kingOfTheHillHillUnit)
     config.penaltyController, config.penaltyAlly = InterpretPenalty(config.kingOfTheHillHillPenalty)
 

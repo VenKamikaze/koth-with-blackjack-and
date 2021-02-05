@@ -2,7 +2,7 @@ options =
 {
 	{
 		default 	= 1,
-		label 		= "Type",
+		label 		= "Koth: Type",
 		help 		= "Whether or not a map-specific hill or a custom hill is used. If there is no map-specific hill defined, the custom settings will be used.",
 		key 		= 'KingOfTheHillHillType',
 		pref	 	= 'KingOfTheHillHillType',
@@ -22,7 +22,7 @@ options =
 
     {
 		default 	= 2,
-		label 		= "Radius",
+		label 		= "Koth: Radius",
 		help 		= "Defines the size of the hill.",
 		key 		= 'KingOfTheHillHillSize',
 		pref	 	= 'KingOfTheHillHillSize',
@@ -47,7 +47,7 @@ options =
 
     {
 		default 	= 2,
-		label 		= "Delay",
+		label 		= "Koth: Delay",
 		help 		= "Defines how long it takes for the hill to become active.",
 		key 		= 'KingOfTheHillHillDelay',
 		pref	 	= 'KingOfTheHillHillDelay',
@@ -77,7 +77,7 @@ options =
 
     {
 		default 	= 1,
-		label 		= "Center",
+		label 		= "Koth: Center",
 		help 		= "Defines where the hill will be located.",
 		key 		= 'KingOfTheHillHillCenter',
 		pref	 	= 'KingOfTheHillHillCenter',
@@ -102,7 +102,7 @@ options =
 
     {
 		default 	= 3,
-		label 		= "Score",
+		label 		= "Koth: Score",
 		help 		= "Defines how many points are required to win. One point is gained for every 30 seconds of consecutive hill control.",
 		key 		= 'KingOfTheHillHillScore',
 		pref	 	= 'KingOfTheHillHillScore',
@@ -137,7 +137,7 @@ options =
 
     {
 		default 	= 3,
-		label 		= "Controllers unit",
+		label 		= "Koth: Controllers unit",
 		help 		= "Defines what unit bonus the controller of the hill will have under its control.",
 		key 		= 'KingOfTheHillHillUnit',
 		pref	 	= 'KingOfTheHillHillUnit',
@@ -172,7 +172,7 @@ options =
 
     {
 		default 	= 1,
-		label 		= "Tech introduction delay",
+		label 		= "Koth: Tech introduction delay",
 		help 		= "Defines how long it takes for all the other players to have their tech restrictions lifted.",
 		key 		= 'KingOfTheHillHillTechIntroductionDelay',
 		pref	 	= 'KingOfTheHillHillTechIntroductionDelay',
@@ -197,7 +197,7 @@ options =
 
     {
 		default 	= 2,
-		label 		= "Mass penalty",
+		label 		= "Koth: Mass penalty",
 		help 		= "Defines the mass production penalty for controlling the hill. The controller will have a higher penalty than its team members.",
 		key 		= 'KingOfTheHillHillPenalty',
 		pref	 	= 'KingOfTheHillHillPenalty',
@@ -216,6 +216,26 @@ options =
                 text = "40 and 20 percent", 
                 help = "The controller will have a 40 percent mass production penalty, its team members will have a 20 percent mass production penalty.", 
                 key = 3, 
+            },	
+		},	
+    },
+
+    {
+		default 	= 1,
+		label 		= "Koth: Tech unlock curve",
+		help 		= "Defines how many points you need to unlock an additional tech.",
+		key 		= 'kingOfTheHillTechCurve',
+		pref	 	= 'kingOfTheHillTechCurve',
+		values 		= {
+			{ 
+                text = "Early", 
+                help = "Tech 2 will be unlocked at 20 percent of the total points, tech 3 at 40 percent of the total points and experimentals at 60 percent of the total points.", 
+                key = 1, 
+            },	
+			{ 
+                text = "Averaged", 
+                help = "Tech 2 will be unlocked at 30 percent of the total points, tech 3 at 55 percent of the total points and experimentals at 80 percent of the total points.", 
+                key = 2, 
             },	
 		},	
     },
