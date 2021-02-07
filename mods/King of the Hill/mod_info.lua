@@ -1,6 +1,6 @@
 name = "King of the Hill"
-uid = "jip-koth-14"
-version = 14
+uid = "jip-koth-15"
+version = 15
 copyright = ""
 description = "Players receive points for controlling the hill. The first player to reach the point threshold wins!"
 author = "(Jip) Willem Wijnia"

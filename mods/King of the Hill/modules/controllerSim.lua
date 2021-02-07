@@ -39,6 +39,11 @@ function OnStart()
     state.scoreThreshold = config.hillPoints
     state.armies, brains = ModUtilities.FindPlayersSim()
 
+    -- add vision over the hill
+    for k, brain in brains do
+        ScenarioFramework.CreateVisibleAreaLocation(config.hillRadius + 10, config.hillCenter, -1, brain)
+    end
+
     -- start computing the thresholds
     ForkThread(
         function() 
