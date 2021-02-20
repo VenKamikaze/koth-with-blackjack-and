@@ -13,7 +13,7 @@ local Tooltip = import('/lua/ui/game/tooltip.lua')
 local Prefs = import('/lua/user/prefs.lua')
 local Tooltip = import('/lua/ui/game/tooltip.lua')
 
-local ModUtilities = import('/mods/King of the Hill/modules/utilities.lua');
+local uiUtils = import('/mods/King of the Hill/modules/ui-utils.lua');
 
 local Prefs = import('/lua/user/prefs.lua')
 local pixelScaleFactor = Prefs.GetFromCurrentProfile('options').ui_scale or 1
@@ -26,7 +26,7 @@ function CreateModUI(isReplay, _parent)
 	parent = _parent
 
 	-- get all the non-civilian armies.
-	local armies = ModUtilities.FindPlayersUI()
+	local armies = uiUtils.FindPlayersUI()
 
 	BuildUI(armies)
 	SetLayout(armies)
@@ -77,8 +77,8 @@ function BuildUI(armies)
 
 	interface.box.text1 = UIUtil.CreateText(interface.box, 'One point is given for every ... ', 14, UIUtil.bodyFont);
 	interface.box.text2 = UIUtil.CreateText(interface.box, 'consecutive seconds of hill control', 14, UIUtil.bodyFont);
-	interface.box.text3 = UIUtil.CreateText(interface.box, 'Commanders on the hill provide', 14, UIUtil.bodyFont);
-	interface.box.text4 = UIUtil.CreateText(interface.box, 'double the amount of points', 14, UIUtil.bodyFont);
+	interface.box.text3 = UIUtil.CreateText(interface.box, 'The hill provides bonus resources', 14, UIUtil.bodyFont);
+	interface.box.text4 = UIUtil.CreateText(interface.box, 'With a commander you get 50% more', 14, UIUtil.bodyFont);
 	
 	interface.box.restrictions1 = UIUtil.CreateText(interface.box, 'Tech restrictions are lifted over time', 14, UIUtil.bodyFont);
 	interface.box.restrictions4 = UIUtil.CreateText(interface.box, 'Experimental tech: ... points', 14, UIUtil.bodyFont);
@@ -100,10 +100,11 @@ function BuildUI(armies)
 		-- actual UI elements
 		data.icon = Bitmap(interface.box);
 		data.iconKing = Bitmap(interface.box);
-		data.iconAllyOfKing = Bitmap(interface.box);
+		data.iconContesting = Bitmap(interface.box);
 		data.iconBackground = Bitmap(interface.box);
 		data.nickname = UIUtil.CreateText(interface.box, army.nickname, 14, UIUtil.bodyFont)
-		data.points = UIUtil.CreateText(interface.box, '.. / ..', 14, UIUtil.bodyFont)
+		data.pointsAcc = UIUtil.CreateText(interface.box, '.. / ..', 14, UIUtil.bodyFont)
+		data.pointsSeq = UIUtil.CreateText(interface.box, '.. / ..', 14, UIUtil.bodyFont)
 		table.insert(interface.box.armies, data);
 	end
 end
@@ -130,7 +131,7 @@ function SetLayout(armies)
 	-- to the number of players.					--
 
 	LayoutHelpers.SetHeight(interface.box.panel, 20 + 14 * table.getn(armies) + 20 * 14)
-	LayoutHelpers.SetWidth(interface.box.panel, 262)
+	LayoutHelpers.SetWidth(interface.box.panel, 312)
 	LayoutHelpers.AtLeftTopIn(interface.box.panel, interface.box)
 
 	interface.box.Height:Set(interface.box.panel.Height)
@@ -289,11 +290,11 @@ function SetLayout(armies)
 		LayoutHelpers.AtLeftTopIn(data.iconKing, interface.box, 20, 23 + k * 14)
 		data.iconKing:Hide()
 
-		data.iconAllyOfKing:SetTexture("/mods/King of the Hill/icons/king-ally.png")
-		data.iconAllyOfKing.Width:Set(14)
-		data.iconAllyOfKing.Height:Set(14)
-		LayoutHelpers.AtLeftTopIn(data.iconAllyOfKing, interface.box, 20, 23 + k * 14)
-		data.iconAllyOfKing:Hide()
+		data.iconContesting:SetTexture("/mods/King of the Hill/icons/swords.png")
+		data.iconContesting.Width:Set(14)
+		data.iconContesting.Height:Set(14)
+		LayoutHelpers.AtLeftTopIn(data.iconContesting, interface.box, 20, 23 + k * 14)
+		data.iconContesting:Hide()
 
 		data.icon:SetTexture(UIUtil.UIFile(UIUtil.GetFactionIcon(data.faction)));
 		data.icon.Width:Set(14);
@@ -309,8 +310,11 @@ function SetLayout(armies)
 		data.nickname:SetColor('ffffffff');
 		LayoutHelpers.AtLeftTopIn(data.nickname, interface.box, 60, 22 + k * 14)
 
-		data.points:SetColor('ffffffff');
-		LayoutHelpers.AtRightTopIn(data.points, interface.box, 15, 22 + k * 14)
+		data.pointsAcc:SetColor('ffffffff');
+		LayoutHelpers.AtRightTopIn(data.pointsAcc, interface.box, 55, 22 + k * 14)
+
+		data.pointsSeq:SetColor('ffffffff');
+		LayoutHelpers.AtRightTopIn(data.pointsSeq, interface.box, 15, 22 + k * 14)
 	end
 end
 
@@ -379,19 +383,21 @@ function ShowHideElements(show)
 		for k, data in interface.box.armies do 
 			data.icon:Show();
 			data.iconKing:SetHidden(not data.isKing)
-			data.iconAllyOfKing:SetHidden(not data.IsAllyOfKing)
+			data.iconContesting:SetHidden(not data.iconContesting)
 			data.iconBackground:Show();
 			data.nickname:Show();
-			data.points:Show();
+			data.pointsAcc:Show();
+			data.pointsSeq:Show();
 		end
 	else
 		for k, data in interface.box.armies do 
 			data.icon:Hide();
 			data.iconKing:Hide();
-			data.iconAllyOfKing:Hide()
+			data.iconContesting:Hide(not data.iconContesting)
 			data.iconBackground:Hide();
 			data.nickname:Hide();
-			data.points:Hide();
+			data.pointsAcc:Hide();
+			data.pointsSeq:Show();
 		end
 	end
 end

@@ -1,10 +1,8 @@
 
-local ModUtilities = import("/mods/King Of The Hill/modules/utilities.lua")
-
 local configs = import("/mods/King Of The Hill/modules/map-specifics.lua").configs
 local options = import("/mods/King Of The Hill/mod_options.lua").options
 
-function InitialiseConfig(ScenarioInfo)
+function Initialise(ScenarioInfo)
 
     local config = { }
 
@@ -133,7 +131,7 @@ function InitialiseConfig(ScenarioInfo)
     end
 
     function InterpretDelay(kingOfTheHillHillDelay)
-        return 120 + 120 * kingOfTheHillHillDelay 
+        return 5 --120 + 120 * kingOfTheHillHillDelay 
     end
 
     function InterpretCenter(kingOfTheHillHillCenter)
@@ -144,15 +142,15 @@ function InitialiseConfig(ScenarioInfo)
 
         local center = { 0, 0, 0 }
         if kingOfTheHillHillCenter == 1 then 
-            center = ModUtilities.ComputeMiddleOfTheMap()
+            center = ComputeMiddleOfTheMap()
         end
 
         if kingOfTheHillHillCenter == 2 then 
-            center = ModUtilities.ComputeMiddleOfSpawns()
+            center = ComputeMiddleOfSpawns()
         end
 
         if kingOfTheHillHillCenter == 3 then 
-            center = ModUtilities.ComputeMiddleOfPlayers()
+            center = ComputeMiddleOfPlayers()
         end
 
         -- LOG(repr(center))
@@ -177,8 +175,6 @@ function InitialiseConfig(ScenarioInfo)
         return 60 + 60 * kingOfTheHillHillDelay 
     end
 
-    LOG(repr(config))
-
     -- interpret the options set manually
     config.hillActiveAt = InterpretDelay(config.kingOfTheHillHillDelay)
     config.hillCenter = InterpretCenter(config.kingOfTheHillHillCenter)
@@ -192,6 +188,9 @@ function InitialiseConfig(ScenarioInfo)
 
     config.hillUnit = InterpretUnit(config.kingOfTheHillHillUnit)
     config.penaltyController, config.penaltyAlly = InterpretPenalty(config.kingOfTheHillHillPenalty)
+
+    config.scoreAccThreshold = 20
+    config.scoreSeqThreshold = 8
 
     -- attempt to override with map specific settings
     if config.kingOfTheHillHillType == 1 then 
@@ -226,5 +225,66 @@ function InitialiseConfig(ScenarioInfo)
 
     -- LOG(repr(config))
     return config
+end
+
+--- Computes the true center of the map, regardless of start locations.
+function ComputeMiddleOfTheMap()
+    local size = ScenarioInfo.size
+    local center = { 0.5 * size[1], 0, 0.5 * size[2] } 
+    center[2] = GetSurfaceHeight(center[1], center[3])
+    return center
+end
+
+--- Computes the center of the start locations of all present players.
+function ComputeMiddleOfPlayers()
+    local total = { 0, 0 }
+
+    -- go over all the applicable brains
+    local state, brains = FindPlayersSim()
+    for _, brain in brains do 
+        -- keep track on their position to compute the average
+        local x, z = brain:GetArmyStartPos()
+        total[1] = total[1] + x
+        total[2] = total[2] + z
+    end
+
+    -- compute the average
+    local count = table.getn(brains)
+    local center = { total[1] / count, 0, total[2] / count }
+    center[2] = GetSurfaceHeight(center[1], center[3])
+    
+    return center
+end
+
+--- Computes the center based on the start locations of all players, even the ones that are not
+-- in use.
+function ComputeMiddleOfSpawns() 
+    local total = { 0, 0 }
+    local markersFound = 0
+
+    -- go over all the army markers
+    local k = 1
+    local markerName = "ARMY_" .. k
+    local marker = ScenarioUtils.GetMarker(markerName)
+    while marker do
+        -- keep track on how many we found
+        markersFound = markersFound  + 1
+
+        -- keep track on their position to compute the average
+        local markerPosition = marker.position
+        total[1] = total[1] + markerPosition[1]
+        total[2] = total[2] + markerPosition[3]
+
+        -- find the next marker, then go again
+        k = k + 1
+        markerName = "ARMY_" .. k
+        marker = ScenarioUtils.GetMarker(markerName)
+    end
+
+    -- compute the average
+    local center = { total[1] / markersFound, 0, total[2] / markersFound }
+    center[2] = GetSurfaceHeight(center[1], center[3])
+
+    return center
 end
 

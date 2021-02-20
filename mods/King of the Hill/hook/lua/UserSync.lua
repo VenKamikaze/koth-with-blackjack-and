@@ -4,8 +4,7 @@ local baseOnSync = OnSync
 
 function OnSync()
 
-    local path = 'King of the Hill'
-    local controllerUI = import('/mods/' .. path .. '/modules/controllerUI.lua');
+    local controllerUI = import('/mods/King of the Hill/modules/controllerUI.lua');
 
     -- don't break anything!
 	baseOnSync()

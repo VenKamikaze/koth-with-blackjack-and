@@ -5,9 +5,8 @@ function BeginSession()
     -- dun break anything!
     parentBeginSession();
 
-    -- run our own bit of the sim!
-    local path = 'King of the Hill'
-    local controllerSim = import('/mods/' .. path .. '/modules/controllerSim.lua');
-    controllerSim.OnStart();
+    -- run our own bit of sim!
+    local sim = import('/mods/King of the Hill/modules/sim-tick.lua');
+    sim.KingOfTheHill();
 
 end

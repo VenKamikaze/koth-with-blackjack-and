@@ -1,8 +1,8 @@
 name = "King of the Hill"
-uid = "jip-koth-15"
-version = 15
+uid = "jip-koth-20"
+version = 20
 copyright = ""
-description = "Players receive points for controlling the hill. The first player to reach the point threshold wins!"
+description = "Players receive points for controlling the hill. The first player to reach the point threshold wins!\r\n\r\nCredits to AcidVash for the voice overs."
 author = "(Jip) Willem Wijnia"
 url = ""
 
