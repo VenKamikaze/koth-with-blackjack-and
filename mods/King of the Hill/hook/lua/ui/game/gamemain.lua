@@ -1,6 +1,6 @@
 
 
-import("/lua/lazyvar.lua").ExtendedErrorMessages = true
+-- import("/lua/lazyvar.lua").ExtendedErrorMessages = true
 
 local baseCreateUI = CreateUI;
 function CreateUI(isReplay) 
