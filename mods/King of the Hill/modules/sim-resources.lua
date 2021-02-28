@@ -1,5 +1,6 @@
 
 local ScenarioFramework = import('/lua/ScenarioFramework.lua');
+local bonusAsFractionOfAverageIncome = 0.5
 
 -- playerTables = {
 --     armies={
@@ -19,57 +20,85 @@ local ScenarioFramework = import('/lua/ScenarioFramework.lua');
 --         }
 --     },
 -- }
-    
-function Tick(playerTables)
 
-    -- compute amount of contestants
+--- Counts the number of contesters that are alive
+local function countContestants(playerTables)
     local contestants = 0
-    for k, player in playerTables do 
-        if player.isContesting then 
+    for _, player in playerTables do
+        if player.isContesting and (not player.isDefeated) then
             contestants = contestants + 1
         end
     end
+    return contestants
+end
 
-    -- compute amount of kings
-    local kings = 0 
-    for k, player in playerTables do 
-        if player.isKing then 
-            kings = kings + 1 
+--- Counts the number of kings that are alive
+local function countKings(playerTables)
+    local kings = 0
+    for _, player in playerTables do
+        if player.isKing and (not player.isDefeated) then
+            kings = kings + 1
         end
     end
+    return kings
+end
 
-    -- determine total income
-    local total = 0 
-    for k, player in playerTables do 
-        local brain = GetArmyBrain(player.strArmy)
-        total = total + brain:GetEconomyIncome("MASS")
+--- Counts the total mass income over all players that are alive
+local function countTotalMassIncome(playerTables)
+    local total = 0
+    for _, player in playerTables do
+        if not player.isDefeated then
+            total = total + GetArmyBrain(player.strArmy):GetEconomyIncome("MASS")
+        end
     end
+    return total
+end
 
-    -- if there are any kings
-    if kings > 0 then 
-        for k, player in playerTables do 
-            if player.isKing then 
-                -- determine the amount
-                local amount = (1.0 / kings) * 0.15 * total
-    
-                -- provide resources
-                local brain = GetArmyBrain(player.strArmy)
-                brain:GiveResource('MASS', amount)
-            end
+--- Counts the number of players that are alive
+local function countAlivePlayers(playerTables)
+    local playerCount = 0
+    for _, player in playerTables do
+        if not player.isDefeated then
+            playerCount = playerCount + 1
         end
-    else 
-        -- else, if there are any contestants
-        if contestants > 0 then 
-            for k, player in playerTables do 
-                if player.isContesting then 
-                    -- determine the amount
-                    local amount = (1.0 / contestants) * 0.15 * total
-    
-                    -- provide resources
-                    local brain = GetArmyBrain(player.strArmy)
-                    brain:GiveResource('MASS', amount)
-                end
-            end
+    end
+    return playerCount
+end
+
+--- Computes the average mass income over all players that are alive
+local function countAverageMassIncome(playerTables)
+    return countTotalMassIncome(playerTables) / countAlivePlayers(playerTables)
+end
+
+--- Provides the bonus to each king that is alive
+local function giveBonusToKings(playerTables, amountOfKings)
+    local massBonus = countAverageMassIncome(playerTables) * bonusAsFractionOfAverageIncome / amountOfKings
+
+    for _, player in playerTables do
+        if player.isKing and (not player.isDefeated) then
+            GetArmyBrain(player.strArmy):GiveResource('MASS', massBonus)
         end
+    end
+end
+
+--- Provides a mass bonus to each contester that is alive
+local function giveBonusToContestants(playerTables, amountOfContesters)
+    local massBonus = countAverageMassIncome(playerTables) * bonusAsFractionOfAverageIncome / amountOfContesters
+
+    for _, player in playerTables do
+        if player.isContesting and (not player.isDefeated) then
+            GetArmyBrain(player.strArmy):GiveResource('MASS', massBonus)
+        end
+    end
+end
+
+function Tick(playerTables)
+    local amountOfKings = countKings(playerTables)
+    local amountOfContesters = countContestants(playerTables)
+
+    if amountOfKings > 0 then
+        giveBonusToKings(playerTables, amountOfKings)
+    elseif amountOfContesters > 0 then 
+        giveBonusToContestants(playerTables, amountOfContesters)
     end
 end
