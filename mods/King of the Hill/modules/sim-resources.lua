@@ -67,7 +67,13 @@ end
 
 --- Computes the average mass income over all players that are alive
 local function countAverageMassIncome(playerTables)
-    return countTotalMassIncome(playerTables) / countAlivePlayers(playerTables)
+    local alivePlayerCount = countAlivePlayers(playerTables)
+
+    if alivePlayerCount == 0 then
+        return 0
+    end
+
+    return countTotalMassIncome(playerTables) / alivePlayerCount
 end
 
 --- Provides the bonus to each king that is alive
