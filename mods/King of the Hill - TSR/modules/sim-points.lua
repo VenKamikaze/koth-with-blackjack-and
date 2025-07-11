@@ -1,7 +1,7 @@
 
 local ScenarioFramework = import('/lua/ScenarioFramework.lua');
 
-local simUtils = import("/mods/King of the Hill/modules/sim-utils.lua")
+local simUtils = import("/mods/King of the Hill - TSR/modules/sim-utils.lua")
 
 -- playerTables = {
 --     armies={

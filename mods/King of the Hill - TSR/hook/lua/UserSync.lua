@@ -4,7 +4,7 @@ local baseOnSync = OnSync
 
 function OnSync()
 
-    local controllerUI = import('/mods/King of the Hill/modules/controllerUI.lua');
+    local controllerUI = import('/mods/King of the Hill - TSR/modules/controllerUI.lua');
 
     -- don't break anything!
 	baseOnSync()
@@ -27,7 +27,7 @@ function OnSync()
     -- send in the config, should happen only once!
     if Sync.SendConfig then 
         if configLoaded then 
-            WARN("King of the Hill: Configuration has already been loaded.")
+            WARN("King of the Hill - TSR: Configuration has already been loaded.")
             return
         end
 

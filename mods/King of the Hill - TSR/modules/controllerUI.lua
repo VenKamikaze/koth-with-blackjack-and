@@ -3,7 +3,7 @@ local path = "King of the hill";
 local interface = import('/mods/' .. path .. '/modules/interface.lua').interface;
 local announcement = import('/lua/ui/game/announcement.lua');
 
-local uiUtils = import('/mods/King of the Hill/modules/ui-utils.lua');
+local uiUtils = import('/mods/King of the Hill - TSR/modules/ui-utils.lua');
 
 local function DetermineColor(value, maximum)
 
@@ -51,7 +51,7 @@ end
 --     },
 -- }
 function ProcessPlayerPointData(playerTables)
-    -- -- LOG("King of the Hill: Received player point playerTables")
+    -- -- LOG("King of the Hill - TSR: Received player point playerTables")
     for k, player in playerTables do
 
         -- find the corresponding army related UI player
@@ -76,7 +76,7 @@ function ProcessPlayerPointData(playerTables)
 
         -- set individual stats
         if player.identifier == GetFocusArmy() then 
-            -- LOG("King of the Hill: Found focus army for player point playerTables ")
+            -- LOG("King of the Hill - TSR: Found focus army for player point playerTables ")
             interface.box.textContesting:SetText(string.format("Can contest: %s", BoolToString(player.canContest)))
             interface.box.textControlling:SetText(string.format("Can control: %s", BoolToString(player.canControl)))
             interface.box.textMassOnHill:SetText(string.format("Mass on hill: %i", player.massOnHill))

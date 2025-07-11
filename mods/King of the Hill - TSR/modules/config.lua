@@ -81,7 +81,7 @@ function Initialise(ScenarioInfo)
 
     DefaultValues(config)
     DefaultRawValues(config)
-    ---- LOG("King of the Hill: Config initialisation")
+    ---- LOG("King of the Hill - TSR: Config initialisation")
 
     -- load in the actual options, if they exist / are set
     if ScenarioInfo.Options then 

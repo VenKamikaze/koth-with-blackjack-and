@@ -6,7 +6,7 @@ function BeginSession()
     parentBeginSession();
 
     -- run our own bit of sim!
-    local sim = import('/mods/King of the Hill/modules/sim-tick.lua');
+    local sim = import('/mods/King of the Hill - TSR/modules/sim-tick.lua');
     sim.KingOfTheHill();
 
 end

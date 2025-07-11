@@ -9,7 +9,7 @@ function CreateUI(isReplay)
 	local parent = import('/lua/ui/game/borders.lua').GetMapGroup()
 	ForkThread(
 		function()
-			local path = "King of the Hill";
+			local path = "King of the Hill - TSR";
 			import('/mods/' .. path .. '/modules/interface.lua').CreateModUI(isReplay, parent)
 		end
 	);
