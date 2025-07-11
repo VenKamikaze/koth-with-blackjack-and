@@ -1,3 +1,8 @@
+
+# This has been forked from:
+
+https://gitlab.com/supreme-commander-forged-alliance/mods/king-of-the-hill
+
 # King of the Hill
 
 ![](/images/overview.png)
