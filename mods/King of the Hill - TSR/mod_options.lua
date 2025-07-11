@@ -2,7 +2,7 @@ options =
 {
 	{
 		default 	= 1,
-		label 		= "Koth: Type",
+		label 		= "Koth-TSR: Type",
 		help 		= "Whether or not a map-specific hill or a custom hill is used. If there is no map-specific hill defined, the custom settings will be used.",
 		key 		= 'KingOfTheHillHillType',
 		pref	 	= 'KingOfTheHillHillType',
@@ -22,7 +22,7 @@ options =
 
     {
 		default 	= 2,
-		label 		= "Koth: Radius",
+		label 		= "Koth-TSR: Radius",
 		help 		= "Defines the size of the hill.",
 		key 		= 'KingOfTheHillHillSize',
 		pref	 	= 'KingOfTheHillHillSize',
@@ -47,7 +47,7 @@ options =
 
     {
 		default 	= 2,
-		label 		= "Koth: Delay",
+		label 		= "Koth-TSR: Delay",
 		help 		= "Defines how long it takes for the hill to become active.",
 		key 		= 'KingOfTheHillHillDelay',
 		pref	 	= 'KingOfTheHillHillDelay',
@@ -77,7 +77,7 @@ options =
 
     {
 		default 	= 1,
-		label 		= "Koth: Center",
+		label 		= "Koth-TSR: Center",
 		help 		= "Defines where the hill will be located.",
 		key 		= 'KingOfTheHillHillCenter',
 		pref	 	= 'KingOfTheHillHillCenter',
@@ -102,7 +102,7 @@ options =
 
     {
 		default 	= 3,
-		label 		= "Koth: Score",
+		label 		= "Koth-TSR: Score",
 		help 		= "Defines how many points are required to win. One point is gained for every 30 seconds of consecutive hill control.",
 		key 		= 'KingOfTheHillHillScore',
 		pref	 	= 'KingOfTheHillHillScore',
@@ -137,7 +137,7 @@ options =
 
     {
 		default 	= 3,
-		label 		= "Koth: Controllers unit",
+		label 		= "Koth-TSR: Controllers unit",
 		help 		= "Defines what unit bonus the controller of the hill will have under its control.",
 		key 		= 'KingOfTheHillHillUnit',
 		pref	 	= 'KingOfTheHillHillUnit',
@@ -172,7 +172,7 @@ options =
 
     {
 		default 	= 1,
-		label 		= "Koth: Tech introduction delay",
+		label 		= "Koth-TSR: Tech introduction delay",
 		help 		= "Defines how long it takes for all the other players to have their tech restrictions lifted.",
 		key 		= 'KingOfTheHillHillTechIntroductionDelay',
 		pref	 	= 'KingOfTheHillHillTechIntroductionDelay',
@@ -197,7 +197,7 @@ options =
 
     {
 		default 	= 2,
-		label 		= "Koth: Mass penalty",
+		label 		= "Koth-TSR: Mass penalty",
 		help 		= "Defines the mass production penalty for controlling the hill. The controller will have a higher penalty than its team members.",
 		key 		= 'KingOfTheHillHillPenalty',
 		pref	 	= 'KingOfTheHillHillPenalty',
@@ -222,7 +222,7 @@ options =
 
     {
 		default 	= 1,
-		label 		= "Koth: Tech unlock curve",
+		label 		= "Koth-TSR: Tech unlock curve",
 		help 		= "Defines how many points you need to unlock an additional tech.",
 		key 		= 'kingOfTheHillTechCurve',
 		pref	 	= 'kingOfTheHillTechCurve',
