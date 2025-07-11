@@ -189,7 +189,7 @@ function Initialise(ScenarioInfo)
     config.hillUnit = InterpretUnit(config.kingOfTheHillHillUnit)
     config.penaltyController, config.penaltyAlly = InterpretPenalty(config.kingOfTheHillHillPenalty)
 
-    config.scoreAccThreshold = 20
+    config.scoreAccThreshold = config.hillPoints
     config.scoreSeqThreshold = 8
 
     -- attempt to override with map specific settings
