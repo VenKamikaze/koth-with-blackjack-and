@@ -1,7 +1,7 @@
 
 local ScenarioFramework = import('/lua/ScenarioFramework.lua');
 
-local utils = import('/mods/King of the Hill/modules/utils.lua');
+local utils = import('/mods/King of the Hill - TSR/modules/utils.lua');
 
 -- config = {
 --     debug=true,

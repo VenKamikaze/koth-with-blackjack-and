@@ -1,17 +1,17 @@
 
 local ScenarioFramework = import('/lua/ScenarioFramework.lua');
 
-local info = import("/mods/King of the Hill/mod_info.lua")
+local info = import("/mods/King of the Hill - TSR/mod_info.lua")
 
-local simUtils = import("/mods/King of the Hill/modules/sim-utils.lua")
-local simThresholds = import("/mods/King of the Hill/modules/sim-thresholds.lua")
-local simResources = import("/mods/King of the Hill/modules/sim-resources.lua")
-local simHill = import("/mods/King of the Hill/modules/sim-hill.lua")
-local simPoints = import("/mods/King of the Hill/modules/sim-points.lua")
-local simRestrictions = import("/mods/King of the Hill/modules/sim-restrictions.lua")
-local simSync = import("/mods/King of the Hill/modules/sim-sync.lua")
-local simVictory = import("/mods/King of the Hill/modules/sim-victory.lua")
-local simVisualisation = import("/mods/King of the Hill/modules/sim-visualisation.lua")
+local simUtils = import("/mods/King of the Hill - TSR/modules/sim-utils.lua")
+local simThresholds = import("/mods/King of the Hill - TSR/modules/sim-thresholds.lua")
+local simResources = import("/mods/King of the Hill - TSR/modules/sim-resources.lua")
+local simHill = import("/mods/King of the Hill - TSR/modules/sim-hill.lua")
+local simPoints = import("/mods/King of the Hill - TSR/modules/sim-points.lua")
+local simRestrictions = import("/mods/King of the Hill - TSR/modules/sim-restrictions.lua")
+local simSync = import("/mods/King of the Hill - TSR/modules/sim-sync.lua")
+local simVictory = import("/mods/King of the Hill - TSR/modules/sim-victory.lua")
+local simVisualisation = import("/mods/King of the Hill - TSR/modules/sim-visualisation.lua")
 
 function KingOfTheHill() 
     ForkThread(KingOfTheHillThread)
@@ -25,7 +25,7 @@ function KingOfTheHillThread()
     WaitSeconds(0.1)
 
     -- initialise state of mod
-    local config        = import ("/mods/King of the Hill/modules/config.lua")
+    local config        = import ("/mods/King of the Hill - TSR/modules/config.lua")
     config              = config.Initialise(ScenarioInfo)
     local brains        = InitialiseBrains()
 
