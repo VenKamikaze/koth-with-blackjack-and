@@ -59,7 +59,7 @@ function BuildUI(armies)
 	interface.box.rightGlowMiddle = Bitmap(interface.box);
 	interface.box.rightGlowBottom = Bitmap(interface.box);
 	
-	interface.box.title = UIUtil.CreateText(interface.box, 'King of the hill', 16, UIUtil.bodyFont);
+	interface.box.title = UIUtil.CreateText(interface.box, 'King of the Hill - TSR', 16, UIUtil.bodyFont);
 	interface.box.title:SetDropShadow(true);
 
 	interface.box.textConquer = UIUtil.CreateText(interface.box, 'Conquer threshold: ... mass', 14, UIUtil.bodyFont);

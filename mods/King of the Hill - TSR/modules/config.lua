@@ -213,7 +213,7 @@ function Initialise(ScenarioInfo)
         end
 
         if temp then 
-            -- LOG("King of the hill: loading map specific hill")
+            -- LOG("King of the Hill - TSR: loading map specific hill")
             -- load in the map specific settings, if applicable
             config.hillCenter = temp.center
             config.hillRadius = temp.radius

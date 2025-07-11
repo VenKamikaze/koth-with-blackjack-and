@@ -1,5 +1,5 @@
 
-local path = "King of the hill";
+local path = "King of the Hill - TSR";
 local interface = import('/mods/' .. path .. '/modules/interface.lua').interface;
 local announcement = import('/lua/ui/game/announcement.lua');
 

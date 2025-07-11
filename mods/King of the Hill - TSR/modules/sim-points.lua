@@ -39,7 +39,7 @@ local function AddScore(playerTable, scoreAccThreshold)
         -- we started our final count down
         if playerTable.scoreSeq == 0 then 
             simUtils.SendAnnouncementWithVoice(
-                "King of the hill",
+                "King of the Hill - TSR",
                 "A team started their final countdown",
                 1,
                 "KingOfTheHill",
@@ -123,7 +123,7 @@ function Tick(config, playerTables, analysedHill)
                         -- announce that we did
                         if leaderIdentifier ~= leaderIdentifierAlt then 
                             simUtils.SendAnnouncementWithVoice(
-                                "King of the hill",
+                                "King of the Hill - TSR",
                                 "A team took the lead",
                                 1,
                                 "KingOfTheHill",

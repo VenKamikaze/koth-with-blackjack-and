@@ -58,7 +58,7 @@ function KingOfTheHillThread()
     )
 
     simUtils.SendAnnouncementWithVoice(
-        "King of the hill",                                                 -- title
+        "King of the Hill - TSR",                                                 -- title
         "The hill is activated in " .. config.hillActiveAt .. " seconds.",  -- subtitle
         10,                                                                 -- delay
         "KingOfTheHill",                                                    -- bank
@@ -66,13 +66,13 @@ function KingOfTheHillThread()
     )
 
     simUtils.SendAnnouncement(
-        "King of the hill",
+        "King of the Hill - TSR",
         "The hill is activated in " .. math.floor(0.5 * config.hillActiveAt) .. " seconds.",
         math.floor(0.5 * config.hillActiveAt)
     )
 
     simUtils.SendAnnouncementWithVoice(
-        "King of the hill",
+        "King of the Hill - TSR",
         "The hill is active.",
         config.hillActiveAt - 2,
         "KingOfTheHill",
