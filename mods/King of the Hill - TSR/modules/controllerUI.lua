@@ -85,6 +85,12 @@ function ProcessPlayerPointData(playerTables)
             army.iconContesting:SetHidden(not player.isContesting and not player.isDefeated)
         end
 
+        if interface.config then
+            if interface.config.hillActiveAt > GetGameTimeSeconds() then
+                interface.box.textContesting:SetText(string.format("Can contest in %i", interface.config.hillActiveAt - GetGameTimeSeconds() ))
+            end
+        end
+        
         -- show defeated armies in grey
         if player.isDefeated then
             army.nickname:SetColor('ff999999');
