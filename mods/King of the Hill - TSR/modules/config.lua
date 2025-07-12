@@ -1,6 +1,7 @@
 
-local configs = import("/mods/King Of The Hill/modules/map-specifics.lua").configs
-local options = import("/mods/King Of The Hill/mod_options.lua").options
+local path = "King of the Hill - TSR";
+local configs = import("/mods/" .. path .. "/modules/map-specifics.lua").configs
+local options = import("/mods/" .. path .. "/mod_options.lua").options
 
 function Initialise(ScenarioInfo)
 
@@ -99,6 +100,8 @@ function Initialise(ScenarioInfo)
     function InterpretTechCurve(kingOfTheHillTechCurve)
 
         local values = {
+            { 0.0, 0.0, 0.0 },
+            { 0.0, 0.2, 0.4 },
             { 0.2, 0.4, 0.6 },
             { 0.3, 0.55, 0.8 }
         }
@@ -131,7 +134,7 @@ function Initialise(ScenarioInfo)
     end
 
     function InterpretDelay(kingOfTheHillHillDelay)
-        return 5 --120 + 120 * kingOfTheHillHillDelay 
+        return 120 + 120 * kingOfTheHillHillDelay 
     end
 
     function InterpretCenter(kingOfTheHillHillCenter)
@@ -158,7 +161,7 @@ function Initialise(ScenarioInfo)
     end
 
     function InterpretScore(kingOfTheHillHillScore)
-        return 10 + 10 * kingOfTheHillHillScore
+        return 20 + 10 * kingOfTheHillHillScore
     end
 
     function InterpretUnit(kingOfTheHillHillUnit)
@@ -177,6 +180,7 @@ function Initialise(ScenarioInfo)
 
     -- interpret the options set manually
     config.hillActiveAt = InterpretDelay(config.kingOfTheHillHillDelay)
+
     config.hillCenter = InterpretCenter(config.kingOfTheHillHillCenter)
     config.hillRadius = InterpretSize(config.kingOfTheHillHillSize)
     config.techIntroductionDelay = InterpretTechDelay(config.kingOfTheHillHillTechIntroductionDelay)
@@ -185,6 +189,11 @@ function Initialise(ScenarioInfo)
     config.restrictionsT2LiftedAt = math.floor(config.techCurveT2 * config.hillPoints)
     config.restrictionsT3LiftedAt = math.floor(config.techCurveT3 * config.hillPoints)
     config.restrictionsT4LiftedAt = math.floor(config.techCurveT4 * config.hillPoints)
+
+    -- set the starting restrictions based on the lifted at values
+    config.restrictedT2 = config.restrictionsT2LiftedAt > 0
+    config.restrictedT3 = config.restrictionsT3LiftedAt > 0 
+    config.restrictedT4 = config.restrictionsT4LiftedAt > 0  
 
     config.hillUnit = InterpretUnit(config.kingOfTheHillHillUnit)
     config.penaltyController, config.penaltyAlly = InterpretPenalty(config.kingOfTheHillHillPenalty)

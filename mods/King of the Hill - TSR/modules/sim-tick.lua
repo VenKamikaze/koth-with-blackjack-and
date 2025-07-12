@@ -84,7 +84,16 @@ function KingOfTheHillThread()
         ScenarioFramework.CreateVisibleAreaLocation(config.hillRadius * 1.1, config.hillCenter, 0, brain)
     end
 
-    WaitSeconds(config.hillActiveAt)
+    -- WaitSeconds(config.hillActiveAt)
+
+    -- wait until the hill is active
+    while config.hillActiveAt < GetGameTimeSeconds() do 
+        WaitSeconds(0.1)
+
+        --Update UI
+        Sync.SendPlayerPointData = playerTable
+    end
+
 
     -- start the clock
     local count = 0
