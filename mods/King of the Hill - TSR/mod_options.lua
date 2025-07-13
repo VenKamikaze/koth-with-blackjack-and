@@ -1,11 +1,13 @@
+import("/mods/king of the hill - tsr/modules/constants.lua")
+
 options =
 {
 	{
 		default 	= 1,
-		label 		= "Koth-TSR: Type",
+		label 		= kothConstants.lobbyLabelPrefix .. ": Type",
 		help 		= "Whether or not a map-specific hill or a custom hill is used. If there is no map-specific hill defined, the custom settings will be used.",
-		key 		= 'KingOfTheHillHillType',
-		pref	 	= 'KingOfTheHillHillType',
+		key 		= 'tsrKothHillType',
+		pref	 	= 'tsrKothHillType',
 		values 		= {
 			{ 
                 text = "Map specific hill", 
@@ -22,10 +24,10 @@ options =
 
     {
 		default 	= 2,
-		label 		= "Koth-TSR: Radius",
+		label 		= kothConstants.lobbyLabelPrefix .. ": Radius",
 		help 		= "Defines the size of the hill.",
-		key 		= 'KingOfTheHillHillSize',
-		pref	 	= 'KingOfTheHillHillSize',
+		key 		= 'tsrKothHillSize',
+		pref	 	= 'tsrKothHillSize',
 		values 		= {
 			{ 
                 text = "Small", 
@@ -46,12 +48,17 @@ options =
     },
 
     {
-		default 	= 2,
-		label 		= "Koth-TSR: Delay",
+		default 	= 3,
+		label 		= kothConstants.lobbyLabelPrefix .. ": Delay",
 		help 		= "Defines how long it takes for the hill to become active.",
-		key 		= 'KingOfTheHillHillDelay',
-		pref	 	= 'KingOfTheHillHillDelay',
+		key 		= 'tsrKothHillDelay',
+		pref	 	= 'tsrKothHillDelay',
 		values 		= {
+            { 
+                text = "No Delay", 
+                help = "The hill will be active at start.", 
+                key = -1, 
+            },
 			{ 
                 text = "Four minutes", 
                 help = "The hill will be active after four minutes.", 
@@ -70,17 +77,22 @@ options =
             { 
                 text = "Ten minutes", 
                 help = "The hill will be active after ten minutes.", 
-                key = 3, 
+                key = 4, 
+            },
+            { 
+                text = "Twenty minutes", 
+                help = "The hill will be active after twenty minutes.", 
+                key = 9, 
             },
 		},	
     },
 
     {
 		default 	= 1,
-		label 		= "Koth-TSR: Center",
+		label 		= kothConstants.lobbyLabelPrefix .. ": Center",
 		help 		= "Defines where the hill will be located.",
-		key 		= 'KingOfTheHillHillCenter',
-		pref	 	= 'KingOfTheHillHillCenter',
+		key 		= 'tsrKothHillCenter',
+		pref	 	= 'tsrKothHillCenter',
 		values 		= {
 			{ 
                 text = "Center of the map", 
@@ -102,11 +114,16 @@ options =
 
     {
 		default 	= 3,
-		label 		= "Koth-TSR: Score",
+		label 		= kothConstants.lobbyLabelPrefix .. ": Score",
 		help 		= "Defines how many points are required to win. One point is gained for every 30 seconds of consecutive hill control.",
-		key 		= 'KingOfTheHillHillScore',
-		pref	 	= 'KingOfTheHillHillScore',
+		key 		= 'tsrKothHillScore',
+		pref	 	= 'tsrKothHillScore',
 		values 		= {
+            { 
+                text = "20", 
+                help = "The first team with a player of 20 points will win.", 
+                key = 0, 
+            },	
 			{ 
                 text = "30", 
                 help = "The first team with a player of 30 points will win. Good for short matches.", 
@@ -132,15 +149,20 @@ options =
                 help = "The first team with a player of 70 points will win. Good for long matches.", 
                 key = 5, 
             },
+            { 
+                text = "80", 
+                help = "The first team with a player of 80 points will win.", 
+                key = 6, 
+            },
 		},	
     },
 
     {
 		default 	= 3,
-		label 		= "Koth-TSR: Controllers unit",
+		label 		= kothConstants.lobbyLabelPrefix .. ": Controllers unit",
 		help 		= "Defines what unit bonus the controller of the hill will have under its control.",
-		key 		= 'KingOfTheHillHillUnit',
-		pref	 	= 'KingOfTheHillHillUnit',
+		key 		= 'tsrKothHillUnit',
+		pref	 	= 'tsrKothHillUnit',
 		values 		= {
 			{ 
                 text = "No unit", 
@@ -172,11 +194,21 @@ options =
 
     {
 		default 	= 1,
-		label 		= "Koth-TSR: Tech introduction delay",
+		label 		= kothConstants.lobbyLabelPrefix .. ": Tech introduction delay",
 		help 		= "Defines how long it takes for all the other players to have their tech restrictions lifted.",
-		key 		= 'KingOfTheHillHillTechIntroductionDelay',
-		pref	 	= 'KingOfTheHillHillTechIntroductionDelay',
+		key 		= 'tsrKothHillTechIntroductionDelay',
+		pref	 	= 'tsrKothHillTechIntroductionDelay',
 		values 		= {
+            { 
+                text = "No Delay", 
+                help = "All the other players will have the latest tech restrictions lifted at the same time.", 
+                key = -1, 
+            },	
+            { 
+                text = "One minute", 
+                help = "After one minute all the other players will have the latest tech restrictions lifted.", 
+                key = 0, 
+            },	
 			{ 
                 text = "Two minutes", 
                 help = "After two minutes all the other players will have the latest tech restrictions lifted.", 
@@ -197,11 +229,16 @@ options =
 
     {
 		default 	= 2,
-		label 		= "Koth-TSR: Mass penalty",
+		label 		= kothConstants.lobbyLabelPrefix .. ": Mass penalty",
 		help 		= "Defines the mass production penalty for controlling the hill. The controller will have a higher penalty than its team members.",
-		key 		= 'KingOfTheHillHillPenalty',
-		pref	 	= 'KingOfTheHillHillPenalty',
+		key 		= 'tsrKothHillPenalty',
+		pref	 	= 'tsrKothHillPenalty',
 		values 		= {
+            { 
+                text = "No Penalty", 
+                help = "No mass production penalty.", 
+                key = -1, 
+            },	
 			{ 
                 text = "20 and 10 percent", 
                 help = "The controller will have a 20 percent mass production penalty, its team members will have a 10 percent mass production penalty.", 
@@ -221,21 +258,31 @@ options =
     },
 
     {
-		default 	= 1,
-		label 		= "Koth-TSR: Tech unlock curve",
+		default 	= 3,
+		label 		= kothConstants.lobbyLabelPrefix .. ": Tech unlock curve",
 		help 		= "Defines how many points you need to unlock an additional tech.",
-		key 		= 'kingOfTheHillTechCurve',
-		pref	 	= 'kingOfTheHillTechCurve',
+		key 		= 'tsrKothTechCurve',
+		pref	 	= 'tsrKothTechCurve',
 		values 		= {
+            { 
+                text = "No Tech restrictions", 
+                help = "All Tech unlocked from the start.", 
+                key = 1, 
+            },	
+            { 
+                text = "Tech 2 Start", 
+                help = "Tech 2 will be unlocked at start, tech 3 at 20 percent of the total points and experimentals at 40 percent of the total points.", 
+                key = 2, 
+            },	
 			{ 
                 text = "Early", 
                 help = "Tech 2 will be unlocked at 20 percent of the total points, tech 3 at 40 percent of the total points and experimentals at 60 percent of the total points.", 
-                key = 1, 
+                key = 3, 
             },	
 			{ 
                 text = "Averaged", 
                 help = "Tech 2 will be unlocked at 30 percent of the total points, tech 3 at 55 percent of the total points and experimentals at 80 percent of the total points.", 
-                key = 2, 
+                key = 4, 
             },	
 		},	
     },

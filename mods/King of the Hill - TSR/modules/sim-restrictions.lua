@@ -1,7 +1,9 @@
 
+import("/mods/king of the hill - tsr/modules/constants.lua");
+local path = kothConstants.path;
 local ScenarioFramework = import('/lua/ScenarioFramework.lua');
 
-local simUtils = import("/mods/King of the Hill - TSR/modules/sim-utils.lua")
+local simUtils = import("/mods/" .. path .. "/modules/sim-utils.lua")
 
 -- playerTables = {
 --     armies={
@@ -109,7 +111,7 @@ function Tick(config, playerTables)
                 )
 
                 simUtils.SendAnnouncementWithVoice(
-                    "King of the Hill - TSR",
+                    kothConstants.modName,
                     "Tech 2 is available to all players.",
                     config.techIntroductionDelay,
                     "KingOfTheHill",
@@ -143,7 +145,7 @@ function Tick(config, playerTables)
                 )
 
                 simUtils.SendAnnouncementWithVoice(
-                    "King of the Hill - TSR",
+                    kothConstants.modName,
                     "Tech 3 is available to all players.",
                     config.techIntroductionDelay,
                     "KingOfTheHill",
@@ -177,7 +179,7 @@ function Tick(config, playerTables)
                 )
 
                 simUtils.SendAnnouncementWithVoice(
-                    "King of the Hill - TSR",
+                    kothConstants.modName,
                     "Experimental tech is available to all players.",
                     config.techIntroductionDelay,
                     "KingOfTheHill",

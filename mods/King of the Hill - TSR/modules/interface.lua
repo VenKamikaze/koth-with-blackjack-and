@@ -1,5 +1,6 @@
 
-local path = 'King of the Hill - TSR'
+import("/mods/king of the hill - tsr/modules/constants.lua")
+local path = kothConstants.path
 
 local UIUtil = import('/lua/ui/uiutil.lua')
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
@@ -13,7 +14,7 @@ local Tooltip = import('/lua/ui/game/tooltip.lua')
 local Prefs = import('/lua/user/prefs.lua')
 local Tooltip = import('/lua/ui/game/tooltip.lua')
 
-local uiUtils = import('/mods/King of the Hill - TSR/modules/ui-utils.lua');
+local uiUtils = import('/mods/' .. path .. '/modules/ui-utils.lua');
 
 local Prefs = import('/lua/user/prefs.lua')
 local pixelScaleFactor = Prefs.GetFromCurrentProfile('options').ui_scale or 1
@@ -59,7 +60,7 @@ function BuildUI(armies)
 	interface.box.rightGlowMiddle = Bitmap(interface.box);
 	interface.box.rightGlowBottom = Bitmap(interface.box);
 	
-	interface.box.title = UIUtil.CreateText(interface.box, 'King of the Hill - TSR', 16, UIUtil.bodyFont);
+	interface.box.title = UIUtil.CreateText(interface.box, kothConstants.modName, 16, UIUtil.bodyFont);
 	interface.box.title:SetDropShadow(true);
 
 	interface.box.textConquer = UIUtil.CreateText(interface.box, 'Conquer threshold: ... mass', 14, UIUtil.bodyFont);
@@ -284,13 +285,13 @@ function SetLayout(armies)
 
 		data.isKing = false
 
-		data.iconKing:SetTexture("/mods/King of the Hill - TSR/icons/king.png")
+		data.iconKing:SetTexture("/mods/" .. path .. "/icons/king.png")
 		data.iconKing.Width:Set(14)
 		data.iconKing.Height:Set(14)
 		LayoutHelpers.AtLeftTopIn(data.iconKing, interface.box, 20, 23 + k * 14)
 		data.iconKing:Hide()
 
-		data.iconContesting:SetTexture("/mods/King of the Hill - TSR/icons/swords.png")
+		data.iconContesting:SetTexture("/mods/" .. path .. "/icons/swords.png")
 		data.iconContesting.Width:Set(14)
 		data.iconContesting.Height:Set(14)
 		LayoutHelpers.AtLeftTopIn(data.iconContesting, interface.box, 20, 23 + k * 14)

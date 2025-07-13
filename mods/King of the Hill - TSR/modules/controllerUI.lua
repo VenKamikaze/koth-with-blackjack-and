@@ -1,9 +1,11 @@
 
-local path = "King of the Hill - TSR";
+import("/mods/king of the hill - tsr/modules/constants.lua");
+
+local path = kothConstants.path;
 local interface = import('/mods/' .. path .. '/modules/interface.lua').interface;
 local announcement = import('/lua/ui/game/announcement.lua');
 
-local uiUtils = import('/mods/King of the Hill - TSR/modules/ui-utils.lua');
+local uiUtils = import('/mods/' .. path .. '/modules/ui-utils.lua');
 
 local function DetermineColor(value, maximum)
 
@@ -63,11 +65,15 @@ function ProcessPlayerPointData(playerTables)
         local army = interface.box.armies[index]
 
         -- set the latest points
-        army.pointsAcc:SetText(string.format("%i / %i", player.scoreAcc, interface.config.scoreAccThreshold));
-        army.pointsAcc:SetNewColor(DetermineColor(player.scoreAcc, interface.config.scoreAccThreshold))
+        if interface.config.scoreAccThreshold and player.scoreAcc then
+          army.pointsAcc:SetText(string.format("%i / %i", player.scoreAcc, interface.config.scoreAccThreshold));
+          army.pointsAcc:SetNewColor(DetermineColor(player.scoreAcc, interface.config.scoreAccThreshold))
+        end
 
-        army.pointsSeq:SetText(string.format("%i / %i", player.scoreSeq, interface.config.scoreSeqThreshold));
-        army.pointsSeq:SetNewColor(DetermineColor(player.scoreSeq, interface.config.scoreSeqThreshold))
+        if interface.config.scoreSeqThreshold and player.scoreSeq then
+          army.pointsSeq:SetText(string.format("%i / %i", player.scoreSeq, interface.config.scoreSeqThreshold));
+          army.pointsSeq:SetNewColor(DetermineColor(player.scoreSeq, interface.config.scoreSeqThreshold))
+        end
 
         -- set the latest king status
         army.isKing = player.isKing

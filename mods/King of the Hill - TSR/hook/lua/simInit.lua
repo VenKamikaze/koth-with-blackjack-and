@@ -1,4 +1,7 @@
 
+import("/mods/king of the hill - tsr/modules/constants.lua")
+local path = kothConstants.path
+
 local parentBeginSession = BeginSession
 function BeginSession()
 
@@ -6,7 +9,7 @@ function BeginSession()
     parentBeginSession();
 
     -- run our own bit of sim!
-    local sim = import('/mods/King of the Hill - TSR/modules/sim-tick.lua');
+    local sim = import('/mods/' .. path .. '/modules/sim-tick.lua');
     sim.KingOfTheHill();
 
 end

@@ -1,10 +1,12 @@
 
+import("/mods/king of the hill - tsr/modules/constants.lua")
+local path = kothConstants.path
 local configLoaded = false
 local baseOnSync = OnSync
 
 function OnSync()
 
-    local controllerUI = import('/mods/King of the Hill - TSR/modules/controllerUI.lua');
+    local controllerUI = import('/mods/' .. path .. '/modules/controllerUI.lua');
 
     -- don't break anything!
 	baseOnSync()
@@ -27,7 +29,7 @@ function OnSync()
     -- send in the config, should happen only once!
     if Sync.SendConfig then 
         if configLoaded then 
-            WARN("King of the Hill - TSR: Configuration has already been loaded.")
+            WARN(kothConstants.modName .. ": Configuration has already been loaded.")
             return
         end
 
