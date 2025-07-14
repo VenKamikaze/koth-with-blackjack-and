@@ -1,7 +1,7 @@
 
-local ScenarioFramework = import('/lua/ScenarioFramework.lua');
-
-local utils = import('/mods/King of the Hill - TSR/modules/utils.lua');
+import("/mods/king of the hill - tsr/modules/constants.lua")
+local ScenarioFramework = import('/lua/ScenarioFramework.lua')
+local utils = import('/mods/' .. kothConstants.path .. '/modules/utils.lua')
 
 -- config = {
 --     debug=true,

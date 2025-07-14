@@ -1,5 +1,5 @@
 
-local ScenarioFramework = import('/lua/ScenarioFramework.lua');
+local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 
 function Tick(config, thresholds, brains) 
     local processed = ProcessHill(config, brains) 
@@ -23,13 +23,13 @@ function ProcessHill(config, brains)
         if not brain:IsDefeated() then
 
             -- find all the units
-            local cats = categories.ALLUNITS - (categories.STRUCTURE + categories.ENGINEER) + categories.COMMAND;
-            local unitsOnHill = brain:GetUnitsAroundPoint(cats, center, radius, 'Ally');
+            local cats = categories.ALLUNITS - (categories.STRUCTURE + categories.ENGINEER) + categories.COMMAND
+            local unitsOnHill = brain:GetUnitsAroundPoint(cats, center, radius, 'Ally')
 
             -- keep track of the brain
             local analysis = { }
             analysis.name = brain.Name
-            analysis.identifier = brain:GetArmyIndex();
+            analysis.identifier = brain:GetArmyIndex()
             analysis.massOnHill = 0
             analysis.unitsOnHill = 0 
             analysis.commanderOnHill = false 
@@ -40,7 +40,7 @@ function ProcessHill(config, brains)
                 -- sum up the number of units and their mass values.
                 for k, unit in unitsOnHill do
                     if not unit:IsDead() then
-                        analysis.unitsOnHill = analysis.unitsOnHill + 1;
+                        analysis.unitsOnHill = analysis.unitsOnHill + 1
 
                         -- do not count in the mass value of the commander
                         if EntityCategoryContains(categories.COMMAND, unit) then
@@ -52,11 +52,11 @@ function ProcessHill(config, brains)
                 end
             end
 
-            table.insert(analyses, analysis);
+            table.insert(analyses, analysis)
         end
     end
 
-    return analyses;
+    return analyses
 end
 
 --- Computes the amount of mass, number of units and whether there is a 
@@ -77,7 +77,7 @@ function AnalyseHill(config, analyses, thresholds)
 
     -- determine if there is a commander on the hill
     for k, analysis in analyses do 
-        state.commanderOnHill = state.commanderOnHill or analysis.commanderOnHill;
+        state.commanderOnHill = state.commanderOnHill or analysis.commanderOnHill
     end
 
     -- determine which armies can control and / or contest the hill

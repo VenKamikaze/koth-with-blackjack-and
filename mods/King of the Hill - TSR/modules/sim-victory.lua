@@ -1,5 +1,5 @@
 
-local ScenarioFramework = import('/lua/ScenarioFramework.lua');
+local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 
 -- config = {
 --     debug=true,

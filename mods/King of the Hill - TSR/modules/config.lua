@@ -1,7 +1,8 @@
 
-local path = "King of the Hill - TSR";
-local configs = import("/mods/" .. path .. "/modules/map-specifics.lua").configs
-local options = import("/mods/" .. path .. "/mod_options.lua").options
+import("/mods/king of the hill - tsr/modules/constants.lua")
+
+local configs = import("/mods/" .. kothConstants.path .. "/modules/map-specifics.lua").configs
+local options = import("/mods/" .. kothConstants.path .. "/mod_options.lua").options
 
 function Initialise(ScenarioInfo)
 
@@ -69,15 +70,15 @@ function Initialise(ScenarioInfo)
 
     local function DefaultRawValues(config)
         -- the raw options data
-        config.kingOfTheHillTechCurve = FindDefaultOption(options, "KingOfTheHillTechCurve")
-        config.kingOfTheHillHillType = FindDefaultOption(options, "KingOfTheHillHillType")
-        config.kingOfTheHillHillSize = FindDefaultOption(options, "KingOfTheHillHillSize")
-        config.kingOfTheHillHillDelay = FindDefaultOption(options, "KingOfTheHillHillDelay")
-        config.kingOfTheHillHillCenter = FindDefaultOption(options, "KingOfTheHillHillCenter")
-        config.kingOfTheHillHillScore = FindDefaultOption(options, "KingOfTheHillHillScore")
-        config.kingOfTheHillHillUnit = FindDefaultOption(options, "KingOfTheHillHillUnit")
-        config.kingOfTheHillHillPenalty = FindDefaultOption(options, "KingOfTheHillHillPenalty")
-        config.kingOfTheHillHillTechIntroductionDelay = FindDefaultOption(options, "KingOfTheHillHillTechIntroductionDelay")
+        config.kingOfTheHillTechCurve = FindDefaultOption(options, "tsrKothTechCurve")
+        config.kingOfTheHillHillType = FindDefaultOption(options, "tsrKothHillType")
+        config.kingOfTheHillHillSize = FindDefaultOption(options, "tsrKothHillSize")
+        config.kingOfTheHillHillDelay = FindDefaultOption(options, "tsrKothHillDelay")
+        config.kingOfTheHillHillCenter = FindDefaultOption(options, "tsrKothHillCenter")
+        config.kingOfTheHillHillScore = FindDefaultOption(options, "tsrKothHillScore")
+        config.kingOfTheHillHillUnit = FindDefaultOption(options, "tsrKothHillUnit")
+        config.kingOfTheHillHillPenalty = FindDefaultOption(options, "tsrKothHillPenalty")
+        config.kingOfTheHillHillTechIntroductionDelay = FindDefaultOption(options, "tsrKothHillTechIntroductionDelay")
     end
 
     DefaultValues(config)
@@ -86,15 +87,15 @@ function Initialise(ScenarioInfo)
 
     -- load in the actual options, if they exist / are set
     if ScenarioInfo.Options then 
-        config.kingOfTheHillTechCurve = ScenarioInfo.Options.KingOfTheHillTechCurve or config.kingOfTheHillTechCurve
-        config.kingOfTheHillHillType = ScenarioInfo.Options.KingOfTheHillHillType or config.kingOfTheHillHillType
-        config.kingOfTheHillHillSize = ScenarioInfo.Options.KingOfTheHillHillSize or config.kingOfTheHillHillSize
-        config.kingOfTheHillHillDelay = ScenarioInfo.Options.KingOfTheHillHillDelay or config.kingOfTheHillHillDelay
-        config.kingOfTheHillHillCenter = ScenarioInfo.Options.KingOfTheHillHillCenter or config.kingOfTheHillHillCenter
-        config.kingOfTheHillHillScore = ScenarioInfo.Options.KingOfTheHillHillScore or config.kingOfTheHillHillScore
-        config.kingOfTheHillHillUnit = ScenarioInfo.Options.KingOfTheHillHillUnit or config.kingOfTheHillHillUnit
-        config.kingOfTheHillHillPenalty = ScenarioInfo.Options.KingOfTheHillHillPenalty or config.kingOfTheHillHillPenalty
-        config.kingOfTheHillHillTechIntroductionDelay = ScenarioInfo.Options.KingOfTheHillHillTechIntroductionDelay or config.kingOfTheHillHillTechIntroductionDelay
+        config.kingOfTheHillTechCurve = ScenarioInfo.Options.tsrKothTechCurve or config.kingOfTheHillTechCurve
+        config.kingOfTheHillHillType = ScenarioInfo.Options.tsrKothHillType or config.kingOfTheHillHillType
+        config.kingOfTheHillHillSize = ScenarioInfo.Options.tsrKothHillSize or config.kingOfTheHillHillSize
+        config.kingOfTheHillHillDelay = ScenarioInfo.Options.tsrKothHillDelay or config.kingOfTheHillHillDelay
+        config.kingOfTheHillHillCenter = ScenarioInfo.Options.tsrKothHillCenter or config.kingOfTheHillHillCenter
+        config.kingOfTheHillHillScore = ScenarioInfo.Options.tsrKothHillScore or config.kingOfTheHillHillScore
+        config.kingOfTheHillHillUnit = ScenarioInfo.Options.tsrKothHillUnit or config.kingOfTheHillHillUnit
+        config.kingOfTheHillHillPenalty = ScenarioInfo.Options.tsrKothHillPenalty or config.kingOfTheHillHillPenalty
+        config.kingOfTheHillHillTechIntroductionDelay = ScenarioInfo.Options.tsrKothHillTechIntroductionDelay or config.kingOfTheHillHillTechIntroductionDelay
     end
 
     function InterpretTechCurve(kingOfTheHillTechCurve)

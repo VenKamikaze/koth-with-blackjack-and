@@ -1,5 +1,5 @@
 
-local path = 'King of the Hill - TSR'
+import("/mods/king of the hill - tsr/modules/constants.lua")
 
 local UIUtil = import('/lua/ui/uiutil.lua')
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
@@ -13,13 +13,13 @@ local Tooltip = import('/lua/ui/game/tooltip.lua')
 local Prefs = import('/lua/user/prefs.lua')
 local Tooltip = import('/lua/ui/game/tooltip.lua')
 
-local uiUtils = import('/mods/King of the Hill - TSR/modules/ui-utils.lua');
+local uiUtils = import('/mods/' .. kothConstants.path .. '/modules/ui-utils.lua')
 
 local Prefs = import('/lua/user/prefs.lua')
 local pixelScaleFactor = Prefs.GetFromCurrentProfile('options').ui_scale or 1
 
-local parent = false;
-interface = { };
+local parent = false
+interface = { }
 
 function CreateModUI(isReplay, _parent)
 
@@ -37,35 +37,35 @@ end
 function BuildUI(armies)
 
 	-- Create arrow checkbox
-	interface.arrow = Checkbox(parent);
+	interface.arrow = Checkbox(parent)
 
 	-- Create group for main UI
-	interface.box = Group(parent);
+	interface.box = Group(parent)
 	
 	-- create the panel.
-	interface.box.panel = Bitmap(interface.box);
+	interface.box.panel = Bitmap(interface.box)
 
-	interface.box.topPanel = Bitmap(interface.box);
-	interface.box.middlePanel = Bitmap(interface.box);
-	interface.box.bottomPanel = Bitmap(interface.box);
+	interface.box.topPanel = Bitmap(interface.box)
+	interface.box.middlePanel = Bitmap(interface.box)
+	interface.box.bottomPanel = Bitmap(interface.box)
 
 	-- Create the left bracket.
-	interface.box.leftTopBracket = Bitmap(interface.box);
-	interface.box.leftMiddleBracket = Bitmap(interface.box);
-	interface.box.leftBottomBracket = Bitmap(interface.box);
+	interface.box.leftTopBracket = Bitmap(interface.box)
+	interface.box.leftMiddleBracket = Bitmap(interface.box)
+	interface.box.leftBottomBracket = Bitmap(interface.box)
 
 	-- create the right 'bracket'.
-	interface.box.rightGlowTop = Bitmap(interface.box);
-	interface.box.rightGlowMiddle = Bitmap(interface.box);
-	interface.box.rightGlowBottom = Bitmap(interface.box);
+	interface.box.rightGlowTop = Bitmap(interface.box)
+	interface.box.rightGlowMiddle = Bitmap(interface.box)
+	interface.box.rightGlowBottom = Bitmap(interface.box)
 	
-	interface.box.title = UIUtil.CreateText(interface.box, 'King of the Hill - TSR', 16, UIUtil.bodyFont);
-	interface.box.title:SetDropShadow(true);
+	interface.box.title = UIUtil.CreateText(interface.box, kothConstants.modName, 16, UIUtil.bodyFont)
+	interface.box.title:SetDropShadow(true)
 
-	interface.box.textConquer = UIUtil.CreateText(interface.box, 'Conquer threshold: ... mass', 14, UIUtil.bodyFont);
-	interface.box.textContest = UIUtil.CreateText(interface.box, 'Contest threshold: ... mass', 14, UIUtil.bodyFont);
+	interface.box.textConquer = UIUtil.CreateText(interface.box, 'Conquer threshold: ... mass', 14, UIUtil.bodyFont)
+	interface.box.textContest = UIUtil.CreateText(interface.box, 'Contest threshold: ... mass', 14, UIUtil.bodyFont)
 
-	interface.box.dividerTop = Bitmap(interface.box);
+	interface.box.dividerTop = Bitmap(interface.box)
 	interface.box.dividerBot = Bitmap(interface.box)
 	interface.box.dividerExplain = Bitmap(interface.box)
 	interface.box.dividerRestrictions = Bitmap(interface.box)
@@ -75,15 +75,15 @@ function BuildUI(armies)
 	interface.box.textMassOnHill = UIUtil.CreateText(interface.box, 'Mass on hill: ...', 14, UIUtil.bodyFont)
 	interface.box.textCommanderOnHill = UIUtil.CreateText(interface.box, 'Commander on hill: ...', 14, UIUtil.bodyFont)
 
-	interface.box.text1 = UIUtil.CreateText(interface.box, 'One point is given for every ... ', 14, UIUtil.bodyFont);
-	interface.box.text2 = UIUtil.CreateText(interface.box, 'consecutive seconds of hill control', 14, UIUtil.bodyFont);
-	interface.box.text3 = UIUtil.CreateText(interface.box, 'The hill provides bonus resources', 14, UIUtil.bodyFont);
-	interface.box.text4 = UIUtil.CreateText(interface.box, 'With a commander you get 50% more', 14, UIUtil.bodyFont);
+	interface.box.text1 = UIUtil.CreateText(interface.box, 'One point is given for every ... ', 14, UIUtil.bodyFont)
+	interface.box.text2 = UIUtil.CreateText(interface.box, 'consecutive seconds of hill control', 14, UIUtil.bodyFont)
+	interface.box.text3 = UIUtil.CreateText(interface.box, 'The hill provides bonus resources', 14, UIUtil.bodyFont)
+	interface.box.text4 = UIUtil.CreateText(interface.box, 'With a commander you get 50% more', 14, UIUtil.bodyFont)
 	
-	interface.box.restrictions1 = UIUtil.CreateText(interface.box, 'Tech restrictions are lifted over time', 14, UIUtil.bodyFont);
-	interface.box.restrictions4 = UIUtil.CreateText(interface.box, 'Experimental tech: ... points', 14, UIUtil.bodyFont);
-	interface.box.restrictions3 = UIUtil.CreateText(interface.box, 'Tech 3: ... points', 14, UIUtil.bodyFont);
-	interface.box.restrictions2 = UIUtil.CreateText(interface.box, 'Tech 2: ... points', 14, UIUtil.bodyFont);
+	interface.box.restrictions1 = UIUtil.CreateText(interface.box, 'Tech restrictions are lifted over time', 14, UIUtil.bodyFont)
+	interface.box.restrictions4 = UIUtil.CreateText(interface.box, 'Experimental tech: ... points', 14, UIUtil.bodyFont)
+	interface.box.restrictions3 = UIUtil.CreateText(interface.box, 'Tech 3: ... points', 14, UIUtil.bodyFont)
+	interface.box.restrictions2 = UIUtil.CreateText(interface.box, 'Tech 2: ... points', 14, UIUtil.bodyFont)
 
 	--------------------------------------------------
 	-- Make the individual player UI items.			--
@@ -98,14 +98,14 @@ function BuildUI(armies)
 		data.faction = army.faction;
 
 		-- actual UI elements
-		data.icon = Bitmap(interface.box);
-		data.iconKing = Bitmap(interface.box);
-		data.iconContesting = Bitmap(interface.box);
-		data.iconBackground = Bitmap(interface.box);
+		data.icon = Bitmap(interface.box)
+		data.iconKing = Bitmap(interface.box)
+		data.iconContesting = Bitmap(interface.box)
+		data.iconBackground = Bitmap(interface.box)
 		data.nickname = UIUtil.CreateText(interface.box, army.nickname, 14, UIUtil.bodyFont)
 		data.pointsAcc = UIUtil.CreateText(interface.box, '.. / ..', 14, UIUtil.bodyFont)
 		data.pointsSeq = UIUtil.CreateText(interface.box, '.. / ..', 14, UIUtil.bodyFont)
-		table.insert(interface.box.armies, data);
+		table.insert(interface.box.armies, data)
 	end
 end
 
@@ -121,7 +121,7 @@ function SetLayout(armies)
 		UIUtil.UIFile('/game/tab-l-btn/tab-close_btn_over.dds'),
 		UIUtil.UIFile('/game/tab-l-btn/tab-open_btn_over.dds'),
 		UIUtil.UIFile('/game/tab-l-btn/tab-close_btn_dis.dds'),
-		UIUtil.UIFile('/game/tab-l-btn/tab-open_btn_dis.dds'))
+		UIUtil.UIFile('/game/tab-l-btn/tab-open_btn_dis.dds'));
 		
 	LayoutHelpers.AtLeftTopIn(interface.arrow, GetFrame(0), -3, 172)
 	interface.arrow.Depth:Set(function() return interface.box.Depth() + 10 end)
@@ -143,26 +143,26 @@ function SetLayout(armies)
 	--------------------------------------------------
 	-- Construct the actual panel					--
 
-	interface.box.topPanel:SetTexture(UIUtil.UIFile('/game/score-panel/panel-score_bmp_t.dds'));
-	interface.box.middlePanel:SetTexture(UIUtil.UIFile('/game/score-panel/panel-score_bmp_m.dds'));
-	interface.box.bottomPanel:SetTexture(UIUtil.UIFile('/game/score-panel/panel-score_bmp_b.dds'));
+	interface.box.topPanel:SetTexture(UIUtil.UIFile('/game/score-panel/panel-score_bmp_t.dds'))
+	interface.box.middlePanel:SetTexture(UIUtil.UIFile('/game/score-panel/panel-score_bmp_m.dds'))
+	interface.box.bottomPanel:SetTexture(UIUtil.UIFile('/game/score-panel/panel-score_bmp_b.dds'))
 
-	interface.box.topPanel.Depth:Set(interface.box.Depth() - 2);
-	interface.box.middlePanel.Depth:Set(interface.box.Depth() - 2);
-	interface.box.bottomPanel.Depth:Set(interface.box.Depth() - 2);
+	interface.box.topPanel.Depth:Set(interface.box.Depth() - 2)
+	interface.box.middlePanel.Depth:Set(interface.box.Depth() - 2)
+	interface.box.bottomPanel.Depth:Set(interface.box.Depth() - 2)
 
-	interface.box.topPanel.Top:Set(function () return interface.box.Top() + 8 end);
-	interface.box.topPanel.Left:Set(function () return interface.box.Left() + 8 end);
-	interface.box.topPanel.Right:Set(function () return interface.box.Right() end);
+	interface.box.topPanel.Top:Set(function () return interface.box.Top() + 8 end)
+	interface.box.topPanel.Left:Set(function () return interface.box.Left() + 8 end)
+	interface.box.topPanel.Right:Set(function () return interface.box.Right() end)
 
-	interface.box.bottomPanel.Top:Set(function () return interface.box.Bottom() end);
-	interface.box.bottomPanel.Left:Set(function () return interface.box.Left() + 8 end);
-	interface.box.bottomPanel.Right:Set(function () return interface.box.Right() end);
+	interface.box.bottomPanel.Top:Set(function () return interface.box.Bottom() end)
+	interface.box.bottomPanel.Left:Set(function () return interface.box.Left() + 8 end)
+	interface.box.bottomPanel.Right:Set(function () return interface.box.Right() end)
 
-	interface.box.middlePanel.Top:Set(function () return interface.box.topPanel.Bottom() end);
+	interface.box.middlePanel.Top:Set(function () return interface.box.topPanel.Bottom() end)
 	interface.box.middlePanel.Bottom:Set(function() return math.max(interface.box.bottomPanel.Top(), interface.box.topPanel.Bottom()) end)
-	interface.box.middlePanel.Left:Set(function () return interface.box.Left() + 8 end);
-	interface.box.middlePanel.Right:Set(function () return interface.box.Right() end);
+	interface.box.middlePanel.Left:Set(function () return interface.box.Left() + 8 end)
+	interface.box.middlePanel.Right:Set(function () return interface.box.Right() end)
 
 	--------------------------------------------------
 	-- Construct the left bracket					--
@@ -206,71 +206,71 @@ function SetLayout(armies)
 	LayoutHelpers.AtLeftTopIn(interface.box.title, interface.box, 20, 11)
 	interface.box.title:SetColor('ffffaa55')
 
-	--interface.box.dividerTop:SetTexture(UIUtil.UIFile('/game/bracket-right-energy/bracket_bmp_m.dds'));
-	interface.box.dividerTop:SetSolidColor('aaaaaaaa');
-	LayoutHelpers.AtLeftTopIn(interface.box.dividerTop, interface.box, 20, 11 + 20 + offsetArmies + 1 * 14);
-	interface.box.dividerTop.Width:Set(222);
-	interface.box.dividerTop.Height:Set(1);
+	--interface.box.dividerTop:SetTexture(UIUtil.UIFile('/game/bracket-right-energy/bracket_bmp_m.dds'))
+	interface.box.dividerTop:SetSolidColor('aaaaaaaa')
+	LayoutHelpers.AtLeftTopIn(interface.box.dividerTop, interface.box, 20, 11 + 20 + offsetArmies + 1 * 14)
+	interface.box.dividerTop.Width:Set(222)
+	interface.box.dividerTop.Height:Set(1)
 
 	-- personal information
 
-	LayoutHelpers.AtLeftTopIn(interface.box.textControlling, interface.box, 20, 11 + 20 + offsetArmies + 1.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.textControlling, interface.box, 20, 11 + 20 + offsetArmies + 1.5 * 14)
 	interface.box.textControlling:SetColor('ffcccccc')
-	LayoutHelpers.AtLeftTopIn(interface.box.textContesting, interface.box, 20, 11 + 20 + offsetArmies + 2.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.textContesting, interface.box, 20, 11 + 20 + offsetArmies + 2.5 * 14)
 	interface.box.textContesting:SetColor('ffcccccc')
 
-	LayoutHelpers.AtLeftTopIn(interface.box.textMassOnHill, interface.box, 20, 11 + 20 + offsetArmies + 3.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.textMassOnHill, interface.box, 20, 11 + 20 + offsetArmies + 3.5 * 14)
 	interface.box.textMassOnHill:SetColor('ffcccccc')
 
-	LayoutHelpers.AtLeftTopIn(interface.box.textCommanderOnHill, interface.box, 20, 11 + 20 + offsetArmies + 4.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.textCommanderOnHill, interface.box, 20, 11 + 20 + offsetArmies + 4.5 * 14)
 	interface.box.textCommanderOnHill:SetColor('ffcccccc')
 
-	interface.box.dividerBot:SetSolidColor('aaaaaaaa');
-	LayoutHelpers.AtLeftTopIn(interface.box.dividerBot, interface.box, 20, 11 + 20 + offsetArmies + 6 * 14);
-	interface.box.dividerBot.Width:Set(222);
-	interface.box.dividerBot.Height:Set(1);
+	interface.box.dividerBot:SetSolidColor('aaaaaaaa')
+	LayoutHelpers.AtLeftTopIn(interface.box.dividerBot, interface.box, 20, 11 + 20 + offsetArmies + 6 * 14)
+	interface.box.dividerBot.Width:Set(222)
+	interface.box.dividerBot.Height:Set(1)
 
 	-- control / contest thresholds
-	LayoutHelpers.AtLeftTopIn(interface.box.textConquer, interface.box, 20, 11 + 20 + offsetArmies + 6.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.textConquer, interface.box, 20, 11 + 20 + offsetArmies + 6.5 * 14)
 	interface.box.textConquer:SetColor('ffcccccc')
 
-	LayoutHelpers.AtLeftTopIn(interface.box.textContest, interface.box, 20, 11 + 20 + offsetArmies + 7.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.textContest, interface.box, 20, 11 + 20 + offsetArmies + 7.5 * 14)
 	interface.box.textContest:SetColor('ffcccccc')
 
-	interface.box.dividerExplain:SetSolidColor('aaaaaaaa');
-	LayoutHelpers.AtLeftTopIn(interface.box.dividerExplain, interface.box, 20, 11 + 20 + offsetArmies + 9 * 14);
-	interface.box.dividerExplain.Width:Set(222);
-	interface.box.dividerExplain.Height:Set(1);
+	interface.box.dividerExplain:SetSolidColor('aaaaaaaa')
+	LayoutHelpers.AtLeftTopIn(interface.box.dividerExplain, interface.box, 20, 11 + 20 + offsetArmies + 9 * 14)
+	interface.box.dividerExplain.Width:Set(222)
+	interface.box.dividerExplain.Height:Set(1)
 
 	-- Point information
-	LayoutHelpers.AtLeftTopIn(interface.box.text1, interface.box, 20, 11 + 20 + offsetArmies + 9.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.text1, interface.box, 20, 11 + 20 + offsetArmies + 9.5 * 14)
 	interface.box.text1:SetColor('ffcccccc')
 
-	LayoutHelpers.AtLeftTopIn(interface.box.text2, interface.box, 20, 11 + 20 + offsetArmies + 10.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.text2, interface.box, 20, 11 + 20 + offsetArmies + 10.5 * 14)
 	interface.box.text2:SetColor('ffcccccc')
 
-	LayoutHelpers.AtLeftTopIn(interface.box.text3, interface.box, 20, 11 + 20 + offsetArmies + 12.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.text3, interface.box, 20, 11 + 20 + offsetArmies + 12.5 * 14)
 	interface.box.text3:SetColor('ffcccccc')
 
-	LayoutHelpers.AtLeftTopIn(interface.box.text4, interface.box, 20, 11 + 20 + offsetArmies + 13.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.text4, interface.box, 20, 11 + 20 + offsetArmies + 13.5 * 14)
 	interface.box.text4:SetColor('ffcccccc')
 
 	-- Restriction information
-	interface.box.dividerRestrictions:SetSolidColor('aaaaaaaa');
-	LayoutHelpers.AtLeftTopIn(interface.box.dividerRestrictions, interface.box, 20, 11 + 20 + offsetArmies + 15 * 14);
-	interface.box.dividerRestrictions.Width:Set(222);
-	interface.box.dividerRestrictions.Height:Set(1);
+	interface.box.dividerRestrictions:SetSolidColor('aaaaaaaa')
+	LayoutHelpers.AtLeftTopIn(interface.box.dividerRestrictions, interface.box, 20, 11 + 20 + offsetArmies + 15 * 14)
+	interface.box.dividerRestrictions.Width:Set(222)
+	interface.box.dividerRestrictions.Height:Set(1)
 
-	LayoutHelpers.AtLeftTopIn(interface.box.restrictions1, interface.box, 20, 11 + 20 + offsetArmies + 15.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.restrictions1, interface.box, 20, 11 + 20 + offsetArmies + 15.5 * 14)
 	interface.box.restrictions1:SetColor('ffcccccc')
 
-	LayoutHelpers.AtLeftTopIn(interface.box.restrictions2, interface.box, 20, 11 + 20 + offsetArmies + 16.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.restrictions2, interface.box, 20, 11 + 20 + offsetArmies + 16.5 * 14)
 	interface.box.restrictions2:SetColor('ffcccccc')
 
-	LayoutHelpers.AtLeftTopIn(interface.box.restrictions3, interface.box, 20, 11 + 20 + offsetArmies + 17.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.restrictions3, interface.box, 20, 11 + 20 + offsetArmies + 17.5 * 14)
 	interface.box.restrictions3:SetColor('ffcccccc')
 
-	LayoutHelpers.AtLeftTopIn(interface.box.restrictions4, interface.box, 20, 11 + 20 + offsetArmies + 18.5 * 14);
+	LayoutHelpers.AtLeftTopIn(interface.box.restrictions4, interface.box, 20, 11 + 20 + offsetArmies + 18.5 * 14)
 	interface.box.restrictions4:SetColor('ffcccccc')
 
 
@@ -284,36 +284,36 @@ function SetLayout(armies)
 
 		data.isKing = false
 
-		data.iconKing:SetTexture("/mods/King of the Hill - TSR/icons/king.png")
+		data.iconKing:SetTexture("/mods/" .. kothConstants.path .. "/icons/king.png")
 		data.iconKing.Width:Set(14)
 		data.iconKing.Height:Set(14)
 		LayoutHelpers.AtLeftTopIn(data.iconKing, interface.box, 20, 23 + k * 14)
 		data.iconKing:Hide()
 
-		data.iconContesting:SetTexture("/mods/King of the Hill - TSR/icons/swords.png")
+		data.iconContesting:SetTexture("/mods/" .. kothConstants.path .. "/icons/swords.png")
 		data.iconContesting.Width:Set(14)
 		data.iconContesting.Height:Set(14)
 		LayoutHelpers.AtLeftTopIn(data.iconContesting, interface.box, 20, 23 + k * 14)
 		data.iconContesting:Hide()
 
-		data.icon:SetTexture(UIUtil.UIFile(UIUtil.GetFactionIcon(data.faction)));
-		data.icon.Width:Set(14);
-		data.icon.Height:Set(14);
+		data.icon:SetTexture(UIUtil.UIFile(UIUtil.GetFactionIcon(data.faction)))
+		data.icon.Width:Set(14)
+		data.icon.Height:Set(14)
 		LayoutHelpers.AtLeftTopIn(data.icon, interface.box, 40, 23 + k * 14)
 
-		data.iconBackground:SetSolidColor(data.color);
-		data.iconBackground.Width:Set(14);
-		data.iconBackground.Height:Set(14);
-		data.iconBackground.Depth:Set(data.icon.Depth() - 1);
+		data.iconBackground:SetSolidColor(data.color)
+		data.iconBackground.Width:Set(14)
+		data.iconBackground.Height:Set(14)
+		data.iconBackground.Depth:Set(data.icon.Depth() - 1)
 		LayoutHelpers.AtLeftTopIn(data.iconBackground, interface.box, 40, 23 + k * 14)
 		
-		data.nickname:SetColor('ffffffff');
+		data.nickname:SetColor('ffffffff')
 		LayoutHelpers.AtLeftTopIn(data.nickname, interface.box, 60, 22 + k * 14)
 
-		data.pointsAcc:SetColor('ffffffff');
+		data.pointsAcc:SetColor('ffffffff')
 		LayoutHelpers.AtRightTopIn(data.pointsAcc, interface.box, 55, 22 + k * 14)
 
-		data.pointsSeq:SetColor('ffffffff');
+		data.pointsSeq:SetColor('ffffffff')
 		LayoutHelpers.AtRightTopIn(data.pointsSeq, interface.box, 15, 22 + k * 14)
 	end
 end
@@ -381,23 +381,23 @@ function ShowHideElements(show)
 
 	if show then
 		for k, data in interface.box.armies do 
-			data.icon:Show();
+			data.icon:Show()
 			data.iconKing:SetHidden(not data.isKing)
 			data.iconContesting:SetHidden(not data.iconContesting)
-			data.iconBackground:Show();
-			data.nickname:Show();
-			data.pointsAcc:Show();
-			data.pointsSeq:Show();
+			data.iconBackground:Show()
+			data.nickname:Show()
+			data.pointsAcc:Show()
+			data.pointsSeq:Show()
 		end
 	else
 		for k, data in interface.box.armies do 
-			data.icon:Hide();
-			data.iconKing:Hide();
+			data.icon:Hide()
+			data.iconKing:Hide()
 			data.iconContesting:Hide(not data.iconContesting)
-			data.iconBackground:Hide();
-			data.nickname:Hide();
-			data.pointsAcc:Hide();
-			data.pointsSeq:Show();
+			data.iconBackground:Hide()
+			data.nickname:Hide()
+			data.pointsAcc:Hide()
+			data.pointsSeq:Show()
 		end
 	end
 end

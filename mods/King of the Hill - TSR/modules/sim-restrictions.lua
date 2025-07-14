@@ -1,7 +1,8 @@
 
-local ScenarioFramework = import('/lua/ScenarioFramework.lua');
+import("/mods/king of the hill - tsr/modules/constants.lua")
+local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 
-local simUtils = import("/mods/King of the Hill - TSR/modules/sim-utils.lua")
+local simUtils = import("/mods/" .. kothConstants.path .. "/modules/sim-utils.lua")
 
 -- playerTables = {
 --     armies={
@@ -28,9 +29,39 @@ local restrictionsT3 = categories.TECH3
 local restrictionsT4 = categories.EXPERIMENTAL
 
 -- the various enhancements for the various techs
-local enhancementsT2 = { 'ResourceAllocation', 'AdvancedEngineering', 'LeftPod', 'RightPod', 'Shield', 'TacticalMissile', 'NaniteTorpedoTube', 'StealthGenerator', 'DamageStabilization', 'Missile', 'RegenAura'}
-local enhancementsT3 = { 'ResourceAllocationAdvanced', 'T3Engineering', 'ShieldGeneratorField', 'TacticalNukeMissile', 'MicrowaveLaserGenerator', 'ShieldHeavy' , 'ShieldGeneratorField', 'AdvancedRegenAura', 'DamageStabilizationAdvanced' }
-local enhancementsT4 = { 'Teleporter', 'CloakingGenerator', 'ChronoDampener', 'TacticalNukeMissile', 'BlastAttack'}
+local enhancementsT2 = { 
+  'ResourceAllocation', 
+  'AdvancedEngineering', 
+  'LeftPod', 
+  'RightPod', 
+  'Shield', 
+  'TacticalMissile', 
+  'NaniteTorpedoTube', 
+  'StealthGenerator', 
+  'DamageStabilization', 
+  'Missile', 
+  'RegenAura'
+};
+
+local enhancementsT3 = { 
+  'ResourceAllocationAdvanced', 
+  'T3Engineering', 
+  'ShieldGeneratorField', 
+  'TacticalNukeMissile', 
+  'MicrowaveLaserGenerator', 
+  'ShieldHeavy' , 
+  'ShieldGeneratorField', 
+  'AdvancedRegenAura', 
+  'DamageStabilizationAdvanced' 
+};
+
+local enhancementsT4 = { 
+  'Teleporter', 
+  'CloakingGenerator', 
+  'ChronoDampener', 
+  'TacticalNukeMissile', 
+  'BlastAttack'
+};
 
 function InitializeRestrictions(config, brains)
 
@@ -106,15 +137,15 @@ function Tick(config, playerTables)
                     0,
                     "KingOfTheHill",
                     "T2-King"
-                )
+                );
 
                 simUtils.SendAnnouncementWithVoice(
-                    "King of the Hill - TSR",
+                    kothConstants.modName,
                     "Tech 2 is available to all players.",
                     config.techIntroductionDelay,
                     "KingOfTheHill",
                     "T2-All"
-                )
+                );
                 
             end
         end
@@ -140,15 +171,15 @@ function Tick(config, playerTables)
                     0,
                     "KingOfTheHill",
                     "T3-King"
-                )
+                );
 
                 simUtils.SendAnnouncementWithVoice(
-                    "King of the Hill - TSR",
+                    kothConstants.modName,
                     "Tech 3 is available to all players.",
                     config.techIntroductionDelay,
                     "KingOfTheHill",
                     "T3-All"
-                )
+                );
                 
             end
         end
@@ -174,15 +205,15 @@ function Tick(config, playerTables)
                     0,
                     "KingOfTheHill",
                     "Exp-King"
-                )
+                );
 
                 simUtils.SendAnnouncementWithVoice(
-                    "King of the Hill - TSR",
+                    kothConstants.modName,
                     "Experimental tech is available to all players.",
                     config.techIntroductionDelay,
                     "KingOfTheHill",
                     "Exp-All"
-                )
+                );
                 
             end
         end
@@ -210,7 +241,7 @@ function AddRestrictionsT2Delayed(indices, delay)
             WaitSeconds(delay)
             AddRestrictionsT2(indices)
         end
-    )
+    );
 end
 
 --- Adds the restriction of tech 3 units and certain enhancements for the commander to all the brains.
@@ -233,7 +264,7 @@ function AddRestrictionsT3Delayed(indices, delay)
             WaitSeconds(delay)
             AddRestrictionsT3(indices)
         end
-    )
+    );
 end
 
 --- Adds the restriction of tech 4 units and certain enhancements for the commander to all the brains.
@@ -256,7 +287,7 @@ function AddRestrictionsT4Delayed(indices, delay)
             WaitSeconds(delay)
             AddRestrictionsT4(indices)
         end
-    )
+    );
 end
 
 --- Removes the restriction of tech 2 units and certain enhancements for the commander to all the brains.
@@ -279,7 +310,7 @@ function RemoveRestrictionsT2Delayed(indices, delay)
             WaitSeconds(delay)
             RemoveRestrictionsT2(indices)
         end
-    )
+    );
 end
 
 --- Removes the restriction of tech 3 units and certain enhancements for the commander to all the brains.
@@ -302,7 +333,7 @@ function RemoveRestrictionsT3Delayed(indices, delay)
             WaitSeconds(delay)
             RemoveRestrictionsT3(indices)
         end
-    )
+    );
 end
 
 --- Removes the restriction of tech 4 units and certain enhancements for the commander to all the brains.
@@ -325,5 +356,5 @@ function RemoveRestrictionsT4Delayed(indices, delay)
             WaitSeconds(delay)
             RemoveRestrictionsT4(indices)
         end
-    )
+    );
 end

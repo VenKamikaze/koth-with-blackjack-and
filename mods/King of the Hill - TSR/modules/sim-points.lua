@@ -1,7 +1,8 @@
 
-local ScenarioFramework = import('/lua/ScenarioFramework.lua');
+import("/mods/king of the hill - tsr/modules/constants.lua")
+local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 
-local simUtils = import("/mods/King of the Hill - TSR/modules/sim-utils.lua")
+local simUtils = import("/mods/" .. kothConstants.path .. "/modules/sim-utils.lua")
 
 -- playerTables = {
 --     armies={
@@ -39,12 +40,12 @@ local function AddScore(playerTable, scoreAccThreshold)
         -- we started our final count down
         if playerTable.scoreSeq == 0 then 
             simUtils.SendAnnouncementWithVoice(
-                "King of the Hill - TSR",
+                kothConstants.modName,
                 "A team started their final countdown",
                 1,
                 "KingOfTheHill",
                 "Final" 
-            )
+            );
         end 
 
         playerTable.scoreSeq = playerTable.scoreSeq + 1 
@@ -123,12 +124,12 @@ function Tick(config, playerTables, analysedHill)
                         -- announce that we did
                         if leaderIdentifier ~= leaderIdentifierAlt then 
                             simUtils.SendAnnouncementWithVoice(
-                                "King of the Hill - TSR",
+                                kothConstants.modName,
                                 "A team took the lead",
                                 1,
                                 "KingOfTheHill",
                                 "Lead" 
-                            )
+                            );
                         end 
 
 
@@ -137,7 +138,7 @@ function Tick(config, playerTables, analysedHill)
             end
 
             -- reset the ticks
-            controller.ticks = controller.ticks - tickCount;
+            controller.ticks = controller.ticks - tickCount
         end
     end 
 end

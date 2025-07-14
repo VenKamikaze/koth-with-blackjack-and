@@ -1,9 +1,9 @@
 name = "King of the Hill - TSR"
-uid = "tsr-koth-22"
-version = 22
+uid = "tsr-koth-23"
+version = 23
 copyright = ""
-description = "Players receive points for controlling the hill. The first player to reach the point threshold wins!\r\n\r\nCredits to AcidVash for the voice overs and JIP for the original KoTH this was forked from!"
-author = "Forked by TSR group. Originally by (Jip) Willem Wijnia"
+description = "Players receive points for controlling the hill. The first player to reach the point threshold wins!\n\nCredits to AcidVash for the voice overs and JIP for the original KoTH this was forked from!"
+author = "TSR group, Originally by Jip"
 url = "https://github.com/VenKamikaze/koth-with-blackjack-and"
 
 -- Icon made by Good Ware from www.flaticon.com
