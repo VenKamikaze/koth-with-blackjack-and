@@ -1,11 +1,10 @@
 
-import("/mods/king of the hill - tsr/modules/constants.lua");
+import("/mods/king of the hill - tsr/modules/constants.lua")
 
-local path = kothConstants.path;
-local interface = import('/mods/' .. path .. '/modules/interface.lua').interface;
-local announcement = import('/lua/ui/game/announcement.lua');
+local interface = import('/mods/' .. kothConstants.path .. '/modules/interface.lua').interface
+local announcement = import('/lua/ui/game/announcement.lua')
 
-local uiUtils = import('/mods/' .. path .. '/modules/ui-utils.lua');
+local uiUtils = import('/mods/' .. kothConstants.path .. '/modules/ui-utils.lua')
 
 local function DetermineColor(value, maximum)
 
@@ -65,13 +64,13 @@ function ProcessPlayerPointData(playerTables)
         local army = interface.box.armies[index]
 
         -- set the latest points
-        if interface.config.scoreAccThreshold and player.scoreAcc then
-          army.pointsAcc:SetText(string.format("%i / %i", player.scoreAcc, interface.config.scoreAccThreshold));
+        if interface.config and interface.config.scoreAccThreshold and player.scoreAcc then
+          army.pointsAcc:SetText(string.format("%i / %i", player.scoreAcc, interface.config.scoreAccThreshold))
           army.pointsAcc:SetNewColor(DetermineColor(player.scoreAcc, interface.config.scoreAccThreshold))
         end
 
-        if interface.config.scoreSeqThreshold and player.scoreSeq then
-          army.pointsSeq:SetText(string.format("%i / %i", player.scoreSeq, interface.config.scoreSeqThreshold));
+        if interface.config and interface.config.scoreSeqThreshold and player.scoreSeq then
+          army.pointsSeq:SetText(string.format("%i / %i", player.scoreSeq, interface.config.scoreSeqThreshold))
           army.pointsSeq:SetNewColor(DetermineColor(player.scoreSeq, interface.config.scoreSeqThreshold))
         end
 
@@ -99,8 +98,8 @@ function ProcessPlayerPointData(playerTables)
         
         -- show defeated armies in grey
         if player.isDefeated then
-            army.nickname:SetColor('ff999999');
-            army.points:SetColor('ff999999');
+            army.nickname:SetColor('ff999999')
+            army.points:SetColor('ff999999')
         end
     end
 end
@@ -135,8 +134,8 @@ end
 --     contest = number
 -- }
 function ProcessThresholds(data)
-    interface.box.textConquer:SetText(string.format("Conquer threshold: %i mass", data.control));
-    interface.box.textContest:SetText(string.format("Contest threshold: %i mass", data.contest));
+    interface.box.textConquer:SetText(string.format("Conquer threshold: %i mass", data.control))
+    interface.box.textContest:SetText(string.format("Contest threshold: %i mass", data.contest))
 end
 
 -- {

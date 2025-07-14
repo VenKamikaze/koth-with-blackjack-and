@@ -1,5 +1,5 @@
 
-local ScenarioFramework = import('/lua/ScenarioFramework.lua');
+local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 
 --- Sends an announcement to all the players.
 -- @param title The title of the announcement.
@@ -8,7 +8,7 @@ local ScenarioFramework = import('/lua/ScenarioFramework.lua');
 function SendAnnouncement(title, subtitle, delay)
     ScenarioFramework.CreateTimerTrigger(
         function() 
-            Sync.SendAnnouncement = { title = title, subTitle = subtitle }; 
+            Sync.SendAnnouncement = { title = title, subTitle = subtitle }
         end,
         delay,
         true
@@ -25,7 +25,7 @@ function SendAnnouncementWithVoice(title, subtitle, delay, bank, cue)
     ScenarioFramework.CreateTimerTrigger(
         function() 
             local sound = { cue = cue, bank = bank}
-            Sync.SendAnnouncement = { title = title, subTitle = subtitle, sound = sound }; 
+            Sync.SendAnnouncement = { title = title, subTitle = subtitle, sound = sound }
         end,
         delay,
         true

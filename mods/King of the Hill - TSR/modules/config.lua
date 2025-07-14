@@ -1,9 +1,8 @@
 
 import("/mods/king of the hill - tsr/modules/constants.lua")
-local path = kothConstants.path;
 
-local configs = import("/mods/" .. path .. "/modules/map-specifics.lua").configs
-local options = import("/mods/" .. path .. "/mod_options.lua").options
+local configs = import("/mods/" .. kothConstants.path .. "/modules/map-specifics.lua").configs
+local options = import("/mods/" .. kothConstants.path .. "/mod_options.lua").options
 
 function Initialise(ScenarioInfo)
 

@@ -1,12 +1,11 @@
 
 import("/mods/king of the hill - tsr/modules/constants.lua")
-local path = kothConstants.path
 local configLoaded = false
 local baseOnSync = OnSync
 
 function OnSync()
 
-    local controllerUI = import('/mods/' .. path .. '/modules/controllerUI.lua');
+    local controllerUI = import('/mods/' .. kothConstants.path .. '/modules/controllerUI.lua')
 
     -- don't break anything!
 	baseOnSync()

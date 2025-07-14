@@ -1,20 +1,19 @@
 
-import("/mods/king of the hill - tsr/modules/constants.lua");
-local path = kothConstants.path;
+import("/mods/king of the hill - tsr/modules/constants.lua")
 
-local ScenarioFramework = import('/lua/ScenarioFramework.lua');
+local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 
-local info = import("/mods/" .. path .. "/mod_info.lua")
+local info = import("/mods/" .. kothConstants.path .. "/mod_info.lua")
 
-local simUtils = import("/mods/" .. path .. "/modules/sim-utils.lua")
-local simThresholds = import("/mods/" .. path .. "/modules/sim-thresholds.lua")
-local simResources = import("/mods/" .. path .. "/modules/sim-resources.lua")
-local simHill = import("/mods/" .. path .. "/modules/sim-hill.lua")
-local simPoints = import("/mods/" .. path .. "/modules/sim-points.lua")
-local simRestrictions = import("/mods/" .. path .. "/modules/sim-restrictions.lua")
-local simSync = import("/mods/" .. path .. "/modules/sim-sync.lua")
-local simVictory = import("/mods/" .. path .. "/modules/sim-victory.lua")
-local simVisualisation = import("/mods/" .. path .. "/modules/sim-visualisation.lua")
+local simUtils = import("/mods/" .. kothConstants.path .. "/modules/sim-utils.lua")
+local simThresholds = import("/mods/" .. kothConstants.path .. "/modules/sim-thresholds.lua")
+local simResources = import("/mods/" .. kothConstants.path .. "/modules/sim-resources.lua")
+local simHill = import("/mods/" .. kothConstants.path .. "/modules/sim-hill.lua")
+local simPoints = import("/mods/" .. kothConstants.path .. "/modules/sim-points.lua")
+local simRestrictions = import("/mods/" .. kothConstants.path .. "/modules/sim-restrictions.lua")
+local simSync = import("/mods/" .. kothConstants.path .. "/modules/sim-sync.lua")
+local simVictory = import("/mods/" .. kothConstants.path .. "/modules/sim-victory.lua")
+local simVisualisation = import("/mods/" .. kothConstants.path .. "/modules/sim-visualisation.lua")
 
 function KingOfTheHill() 
     ForkThread(KingOfTheHillThread)
@@ -28,7 +27,7 @@ function KingOfTheHillThread()
     WaitSeconds(0.1)
 
     -- initialise state of mod
-    local config        = import ("/mods/" .. path .. "/modules/config.lua")
+    local config        = import ("/mods/" .. kothConstants.path .. "/modules/config.lua")
     config              = config.Initialise(ScenarioInfo)
     local brains        = InitialiseBrains()
 
@@ -58,7 +57,7 @@ function KingOfTheHillThread()
             WaitSeconds(1)
             Sync.SendThresholds = thresholds
         end
-    )
+    );
 
     simUtils.SendAnnouncementWithVoice(
         kothConstants.modName,                                                 -- title
@@ -66,13 +65,13 @@ function KingOfTheHillThread()
         10,                                                                 -- delay
         "KingOfTheHill",                                                    -- bank
         "King"                                                              -- cue
-    )
+    );
 
     simUtils.SendAnnouncement(
         kothConstants.modName,
         "The hill is activated in " .. math.floor(0.5 * config.hillActiveAt) .. " seconds.",
         math.floor(0.5 * config.hillActiveAt)
-    )
+    );
 
     simUtils.SendAnnouncementWithVoice(
         kothConstants.modName,
@@ -80,7 +79,7 @@ function KingOfTheHillThread()
         config.hillActiveAt - 2,
         "KingOfTheHill",
         "Hill-Active" 
-    )
+    );
 
     -- give all armies vision over the center
     for k, brain in ArmyBrains do 
@@ -160,7 +159,7 @@ function InitialisePlayerTables(brains)
             massOnHill = 0,
             scoreAcc = 0,   
             scoreSeq = 0,
-        }
+        };
     end 
 
     --  stores the initial player tables
@@ -204,5 +203,5 @@ function InitialiseThresholds()
     return {
         control = 800,
         contest = 400,
-    }
+    };
 end 
