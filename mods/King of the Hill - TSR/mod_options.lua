@@ -104,11 +104,11 @@ options =
                 help = "The hill will be located at the average position of all spawn locations.", 
                 key = 2, 
             },	
-			{ 
-                text = "Center of all spawned players", 
-                help = "The hill will be located at the average position of all spawned players.", 
-                key = 3, 
-            },
+-- FindPlayersSim does not exist. FIXME			{ 
+--                text = "Center of all spawned players", 
+--                help = "The hill will be located at the average position of all spawned players.", 
+--                key = 3, 
+--            },
 		},	
     },
 
