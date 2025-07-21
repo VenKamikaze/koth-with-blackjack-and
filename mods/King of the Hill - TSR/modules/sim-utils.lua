@@ -1,4 +1,6 @@
 
+-- is this necessary for ArmyBrains?
+-- local ScenarioUtils = import('/lua/sim/ScenarioUtilities.lua')
 local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 
 --- Sends an announcement to all the players.
@@ -31,3 +33,16 @@ function SendAnnouncementWithVoice(title, subtitle, delay, bank, cue)
         true
     );
 end
+
+--- Filters all the brains available to ensure only brains
+-- that are controlled by humans are returned
+function GetActiveBrains(includeAI)
+    local humanBrains = { }
+    for k, brain in ArmyBrains do 
+        LOG("Found Brain: k=" .. k .. " . BrainType: " .. brain.BrainType)
+        if includeAI or not (brain.BrainType == "AI") then
+            table.insert(humanBrains, brain)
+        end
+    end 
+    return humanBrains
+end   
