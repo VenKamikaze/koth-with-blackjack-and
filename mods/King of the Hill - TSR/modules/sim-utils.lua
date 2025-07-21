@@ -1,6 +1,4 @@
 
--- is this necessary for ArmyBrains?
--- local ScenarioUtils = import('/lua/sim/ScenarioUtilities.lua')
 local ScenarioFramework = import('/lua/ScenarioFramework.lua')
 
 --- Sends an announcement to all the players.
