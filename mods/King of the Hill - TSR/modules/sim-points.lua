@@ -33,14 +33,25 @@ local simUtils = import("/mods/" .. kothConstants.path .. "/modules/sim-utils.lu
 
 -- LOCAL STATE --
 
+local function GetNicknameAsOwnershipNoun(playerNickname)
+    local nick = playerNickname
+    if (string.find(nick, "s", -1, true)) then
+        nick = nick .. "'"
+    else
+        nick = nick .. "'s" 
+    end
+    return nick
+end
+
 -- called when we're ready to provide points
 local function AddScore(playerTable, scoreAccThreshold)
     if playerTable.scoreAcc >= scoreAccThreshold then
 
         -- we started our final count down
         if playerTable.scoreSeq == 0 then 
+            local nick = GetNicknameAsOwnershipNoun(playerTable.nickname)
             simUtils.SendAnnouncementWithVoice(
-                kothConstants.modName,
+                nick .. " team have started their final countdown.",
                 "A team started their final countdown",
                 1,
                 "KingOfTheHill",
@@ -56,13 +67,19 @@ end
 
 local function FindHighestScoreIndex(playerTables)
     local highest = 1
+    local found = false
     for k, player in playerTables do 
+        -- handles edge case with single human player
+        if player.scoreAcc > 0 and not found then
+            highest = k
+            found = true
+        end 
         if player.scoreAcc > playerTables[highest].scoreAcc then 
             highest = k 
         end
     end 
 
-    return highest
+    return (found and highest or -1)
 end 
 
 -- called when hill control is switched to another team
@@ -87,6 +104,7 @@ function Tick(config, playerTables, analysedHill)
         -- first capture, make sure it is never actually 0
         if controller.identifier == 0 then 
             controller.identifier = analysedHill.identifier
+            LOG("We have our first hill controller! Identifier: " .. controller.identifier)
         end 
 
         -- did we switch king?
@@ -117,14 +135,17 @@ function Tick(config, playerTables, analysedHill)
                     if analysedHill.identifier == playerTable.identifier or IsAlly(analysedHill.identifier, playerTable.identifier) then 
 
                         -- determine if we took the lead
-                        local leaderIdentifier = FindHighestScoreIndex(playerTables)
+                        local oldLeaderIdentifier = FindHighestScoreIndex(playerTables)
                         AddScore(playerTable, config.scoreAccThreshold)
-                        local leaderIdentifierAlt = FindHighestScoreIndex(playerTables)
+                        local newLeaderIdentifier = FindHighestScoreIndex(playerTables)
+                        -- LOG("oldLeader: " .. oldLeaderIdentifier .. " newLeader: " .. newLeaderIdentifier)
 
-                        -- announce that we did
-                        if leaderIdentifier ~= leaderIdentifierAlt then 
+                        -- announce that there is a new leader (or first leader)
+                        if oldLeaderIdentifier ~= newLeaderIdentifier then 
+                            local nick = GetNicknameAsOwnershipNoun(playerTable.nickname)
+                            LOG("Announcing new leader: " .. nick)
                             simUtils.SendAnnouncementWithVoice(
-                                kothConstants.modName,
+                                nick .. " team have taken the lead.",
                                 "A team took the lead",
                                 1,
                                 "KingOfTheHill",
