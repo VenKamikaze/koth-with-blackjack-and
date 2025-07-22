@@ -36,12 +36,12 @@ end
 -- that are controlled by humans are returned if includeAI is false:
 -- @param includeAI Whether to include AI brains or only human brains
 function GetActiveBrains(includeAI)
-    local humanBrains = { }
+    local filteredBrains = { }
     for k, brain in ArmyBrains do 
         LOG("Found Brain: k=" .. k .. " . BrainType: " .. brain.BrainType)
         if includeAI or not (brain.BrainType == "AI") then
-            table.insert(humanBrains, brain)
+            table.insert(filteredBrains, brain)
         end
     end 
-    return humanBrains
+    return filteredBrains
 end   
