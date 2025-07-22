@@ -105,9 +105,14 @@ options =
                 key = 2, 
             },	
 			{ 
-                text = "Center of all spawned players", 
-                help = "The hill will be located at the average position of all spawned players.", 
+                text = "Center of all spawned players (excluding AI)", 
+                help = "The hill will be located at the average position of all spawned human players.", 
                 key = 3, 
+            },
+			{ 
+                text = "Center of all spawned players (including AI)", 
+                help = "The hill will be located at the average position of all spawned human or AI players.", 
+                key = 4, 
             },
 		},	
     },

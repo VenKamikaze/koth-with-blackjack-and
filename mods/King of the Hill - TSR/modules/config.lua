@@ -3,6 +3,7 @@ import("/mods/king of the hill - tsr/modules/constants.lua")
 
 local configs = import("/mods/" .. kothConstants.path .. "/modules/map-specifics.lua").configs
 local options = import("/mods/" .. kothConstants.path .. "/mod_options.lua").options
+local simUtils = import("/mods/" .. kothConstants.path .. "/modules/sim-utils.lua")
 
 function Initialise(ScenarioInfo)
 
@@ -154,7 +155,11 @@ function Initialise(ScenarioInfo)
         end
 
         if kingOfTheHillHillCenter == 3 then 
-            center = ComputeMiddleOfPlayers()
+            center = ComputeMiddleOfPlayers(false)
+        end
+
+        if kingOfTheHillHillCenter == 4 then 
+            center = ComputeMiddleOfPlayers(true)
         end
 
         -- LOG(repr(center))
@@ -246,12 +251,13 @@ function ComputeMiddleOfTheMap()
 end
 
 --- Computes the center of the start locations of all present players.
-function ComputeMiddleOfPlayers()
+-- @param includeAI boolean that indicates whether to treat AI as players
+function ComputeMiddleOfPlayers(includeAI)
     local total = { 0, 0 }
 
-    -- go over all the applicable brains
-    local state, brains = FindPlayersSim()
-    for _, brain in brains do 
+    -- go over all the applicable theBrains
+    local theBrains = simUtils.GetActiveBrains(includeAI)
+    for _, brain in theBrains do 
         -- keep track on their position to compute the average
         local x, z = brain:GetArmyStartPos()
         total[1] = total[1] + x
@@ -259,7 +265,7 @@ function ComputeMiddleOfPlayers()
     end
 
     -- compute the average
-    local count = table.getn(brains)
+    local count = table.getn(theBrains)
     local center = { total[1] / count, 0, total[2] / count }
     center[2] = GetSurfaceHeight(center[1], center[3])
     

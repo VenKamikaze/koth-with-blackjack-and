@@ -31,3 +31,17 @@ function SendAnnouncementWithVoice(title, subtitle, delay, bank, cue)
         true
     );
 end
+
+--- Returns all the brains available. Optionally filters to ensure only brains
+-- that are controlled by humans are returned if includeAI is false:
+-- @param includeAI Whether to include AI brains or only human brains
+function GetActiveBrains(includeAI)
+    local filteredBrains = { }
+    for k, brain in ArmyBrains do 
+        LOG("Found Brain: k=" .. k .. " . BrainType: " .. brain.BrainType)
+        if includeAI or not (brain.BrainType == "AI") then
+            table.insert(filteredBrains, brain)
+        end
+    end 
+    return filteredBrains
+end   
