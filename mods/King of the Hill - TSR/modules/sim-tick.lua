@@ -59,24 +59,32 @@ function KingOfTheHillThread()
         end
     );
 
-    simUtils.SendAnnouncementWithVoice(
-        kothConstants.modName,                                                 -- title
-        "The hill is activated in " .. config.hillActiveAt .. " seconds.",  -- subtitle
-        10,                                                                 -- delay
-        "KingOfTheHill",                                                    -- bank
-        "King"                                                              -- cue
-    );
+    if config.hillActiveAt > 0 then
+        simUtils.SendAnnouncementWithVoice(
+          "The hill activates in " .. config.hillActiveAt .. " seconds.",     -- title
+          "The hill is activated in " .. config.hillActiveAt .. " seconds.",  -- subtitle
+          10,                                                                 -- delay
+          "KingOfTheHill",                                                    -- bank
+          "King"                                                              -- cue
+        );
+    end
 
-    simUtils.SendAnnouncement(
-        kothConstants.modName,
-        "The hill is activated in " .. math.floor(0.5 * config.hillActiveAt) .. " seconds.",
-        math.floor(0.5 * config.hillActiveAt)
-    );
+    if config.hillActiveAt > 0 then
+        simUtils.SendAnnouncement(
+            "The hill activates in " .. math.floor(0.5 * config.hillActiveAt) .. " seconds.",
+            "The hill is activated in " .. math.floor(0.5 * config.hillActiveAt) .. " seconds.",
+            math.floor(0.5 * config.hillActiveAt)
+        );
+    end
 
+    local hillActiveMessageDelay = 0
+    if config.hillActiveAt > 0 then
+      hillActiveMessageDelay = 2
+    end
     simUtils.SendAnnouncementWithVoice(
-        kothConstants.modName,
+        "The hill is now active.",
         "The hill is active.",
-        config.hillActiveAt - 2,
+        config.hillActiveAt - hillActiveMessageDelay,
         "KingOfTheHill",
         "Hill-Active" 
     );

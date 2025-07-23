@@ -140,7 +140,7 @@ function Tick(config, playerTables)
                 );
 
                 simUtils.SendAnnouncementWithVoice(
-                    kothConstants.modName,
+                    "Tech 2 is available to all players.",
                     "Tech 2 is available to all players.",
                     config.techIntroductionDelay,
                     "KingOfTheHill",
@@ -174,7 +174,7 @@ function Tick(config, playerTables)
                 );
 
                 simUtils.SendAnnouncementWithVoice(
-                    kothConstants.modName,
+                    "Tech 3 is available to all players.",
                     "Tech 3 is available to all players.",
                     config.techIntroductionDelay,
                     "KingOfTheHill",
@@ -208,7 +208,7 @@ function Tick(config, playerTables)
                 );
 
                 simUtils.SendAnnouncementWithVoice(
-                    kothConstants.modName,
+                    "Experimental tech is available to all players.",
                     "Experimental tech is available to all players.",
                     config.techIntroductionDelay,
                     "KingOfTheHill",
