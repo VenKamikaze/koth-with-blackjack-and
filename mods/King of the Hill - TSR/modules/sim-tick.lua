@@ -93,17 +93,9 @@ function KingOfTheHillThread()
     for k, brain in ArmyBrains do 
         ScenarioFramework.CreateVisibleAreaLocation(config.hillRadius * 1.1, config.hillCenter, 0, brain)
     end
-
-    -- WaitSeconds(config.hillActiveAt)
-
-    -- wait until the hill is active
-    while config.hillActiveAt < GetGameTimeSeconds() do 
-        WaitSeconds(0.1)
-
-        --Update UI
-        Sync.SendPlayerPointData = playerTable
-    end
-
+    
+    --Update UI
+    Sync.SendPlayerPointData = playerTable
 
     -- start the clock
     local count = 0
@@ -113,7 +105,6 @@ function KingOfTheHillThread()
 
         count = count + 1 
         if count > 10 then  
-
             -- routines called every 10th tick
 
             -- update information
@@ -183,17 +174,6 @@ function InitialisePlayerTables(brains)
 
     return playerTables
 end 
-
---- Initialises a default hill table.
-function InitialiseHillTable()
-    local hillTable = { } 
-    hillTable.active=false
-    hillTable.commanderOnHill=false
-    hillTable.contested=false
-    hillTable.controlled=false
-    hillTable.identifier=0
-    return hillTable 
-end
 
 --- Filters all the brains available to ensure only brains 
 -- controlled by humans remain.
