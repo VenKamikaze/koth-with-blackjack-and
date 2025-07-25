@@ -291,4 +291,25 @@ options =
             },	
 		},	
     },
+
+    {
+                default         = 1,
+                label           = kothConstants.lobbyLabelPrefix .. ": Commander can control hill",
+                help            = "A commander immediately contests or controls a hill, if present on the hill.",
+                key             = 'tsrKothCommanderControlHill',
+                pref            = 'tsrKothCommanderControlHill',
+                values          = {
+            {
+                text = "Yes",
+                help = "If a commander is present on the hill, it overrides the need for the mass threshold to control or contest the hill.",
+                key = 1,
+            },
+            {
+                text = "No",
+                help = "A commander does not override the mass threshold for hill control and is not counted towards controlling or contesting the hill.",
+                key = 2,
+            },
+        },
+    },
+
 }

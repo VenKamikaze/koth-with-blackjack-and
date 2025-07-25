@@ -67,6 +67,9 @@ function Initialise(ScenarioInfo)
         -- 2 = center of all spawns
         -- 3 = center of all players
         config.hillCenter = { 0, 0, 0 }
+
+        -- commanders can control and contest the hill on their own
+        config.kingOfTheHillCommanderControl = 1
     end
 
     local function DefaultRawValues(config)
@@ -80,6 +83,7 @@ function Initialise(ScenarioInfo)
         config.kingOfTheHillHillUnit = FindDefaultOption(options, "tsrKothHillUnit")
         config.kingOfTheHillHillPenalty = FindDefaultOption(options, "tsrKothHillPenalty")
         config.kingOfTheHillHillTechIntroductionDelay = FindDefaultOption(options, "tsrKothHillTechIntroductionDelay")
+        config.kingOfTheHillCommanderControl = FindDefaultOption(options, "tsrKothCommanderControlHill")
     end
 
     DefaultValues(config)
@@ -97,6 +101,7 @@ function Initialise(ScenarioInfo)
         config.kingOfTheHillHillUnit = ScenarioInfo.Options.tsrKothHillUnit or config.kingOfTheHillHillUnit
         config.kingOfTheHillHillPenalty = ScenarioInfo.Options.tsrKothHillPenalty or config.kingOfTheHillHillPenalty
         config.kingOfTheHillHillTechIntroductionDelay = ScenarioInfo.Options.tsrKothHillTechIntroductionDelay or config.kingOfTheHillHillTechIntroductionDelay
+        config.kingOfTheHillCommanderControl = ScenarioInfo.Options.tsrKothCommanderControlHill or config.kingOfTheHillCommanderControl
     end
 
     function InterpretTechCurve(kingOfTheHillTechCurve)
@@ -136,7 +141,7 @@ function Initialise(ScenarioInfo)
     end
 
     function InterpretDelay(kingOfTheHillHillDelay)
-        return 120 + 120 * kingOfTheHillHillDelay 
+        return 120 + (120 * kingOfTheHillHillDelay)
     end
 
     function InterpretCenter(kingOfTheHillHillCenter)
@@ -181,7 +186,11 @@ function Initialise(ScenarioInfo)
     end
 
     function InterpretTechDelay(kingOfTheHillHillDelay)
-        return 60 + 60 * kingOfTheHillHillDelay 
+        return 60 + (60 * kingOfTheHillHillDelay)
+    end
+    
+    function InterpretCommanderCanControl(kingOfTheHillCommanderControl)
+        return 1 == kingOfTheHillCommanderControl
     end
 
     -- interpret the options set manually
@@ -195,6 +204,8 @@ function Initialise(ScenarioInfo)
     config.restrictionsT2LiftedAt = math.floor(config.techCurveT2 * config.hillPoints)
     config.restrictionsT3LiftedAt = math.floor(config.techCurveT3 * config.hillPoints)
     config.restrictionsT4LiftedAt = math.floor(config.techCurveT4 * config.hillPoints)
+
+    config.kingOfTheHillCommanderControl = InterpretCommanderCanControl(config.kingOfTheHillCommanderControl)
 
     -- set the starting restrictions based on the lifted at values
     config.restrictedT2 = config.restrictionsT2LiftedAt > 0
