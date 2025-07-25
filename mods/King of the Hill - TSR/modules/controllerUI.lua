@@ -167,7 +167,7 @@ function ProcessConfig(data)
     -- change the corresponding pieces of text
     interface.box.text1:SetText('One point is given for every ' .. data.ticks)
 	
-	interface.box.restrictions4:SetText('Experimental tech: after ' .. data.restrictionsT4LiftedAt .. ' points')
-	interface.box.restrictions3:SetText('Tech 3: after ' .. data.restrictionsT3LiftedAt .. ' points')
-	interface.box.restrictions2:SetText('Tech 2: after ' .. data.restrictionsT2LiftedAt .. ' points')
+    interface.box.restrictions4:SetText('Experimental tech: after ' .. data.restrictionsT4LiftedAt .. ' points')
+    interface.box.restrictions3:SetText('Tech 3: after ' .. data.restrictionsT3LiftedAt .. ' points')
+    interface.box.restrictions2:SetText('Tech 2: after ' .. data.restrictionsT2LiftedAt .. ' points')
 end

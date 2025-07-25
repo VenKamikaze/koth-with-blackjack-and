@@ -11,6 +11,10 @@ function canCommanderControlHill(config, commanderOnHill)
    return (config.kingOfTheHillCommanderControl and commanderOnHill)
 end
 
+function isHillActive(config)
+    return GetGameTimeSeconds() > config.hillActiveAt
+end
+
 --- Computes the amount of mass, number of units and whether there is a 
 -- commander on the hill for each provided brain.
 -- @param config The configuration of the mod.
@@ -71,13 +75,18 @@ function AnalyseHill(config, analyses, thresholds)
 
     -- we assume the hill is abandoned.
     local state = { }
-    state.active = true
+    state.active = isHillActive(config)
     state.controlled = false
     state.contested = false
     state.commanderOnHill = false
     state.identifier = 0
     state.conquerers = { }
     state.contestants = { }
+
+    -- If hill is not yet active, then do not analyse the hill.
+    if not (state.active) then
+        return state
+    end
 
     -- determine if there is a commander on the hill
     for k, analysis in analyses do 

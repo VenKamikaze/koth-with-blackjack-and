@@ -59,24 +59,32 @@ function KingOfTheHillThread()
         end
     );
 
-    simUtils.SendAnnouncementWithVoice(
-        kothConstants.modName,                                                 -- title
-        "The hill is activated in " .. config.hillActiveAt .. " seconds.",  -- subtitle
-        10,                                                                 -- delay
-        "KingOfTheHill",                                                    -- bank
-        "King"                                                              -- cue
-    );
+    if config.hillActiveAt > 0 then
+        simUtils.SendAnnouncementWithVoice(
+          "The hill activates in " .. config.hillActiveAt .. " seconds.",     -- title
+          "The hill is activated in " .. config.hillActiveAt .. " seconds.",  -- subtitle
+          10,                                                                 -- delay
+          "KingOfTheHill",                                                    -- bank
+          "King"                                                              -- cue
+        );
+    end
 
-    simUtils.SendAnnouncement(
-        kothConstants.modName,
-        "The hill is activated in " .. math.floor(0.5 * config.hillActiveAt) .. " seconds.",
-        math.floor(0.5 * config.hillActiveAt)
-    );
+    if config.hillActiveAt > 0 then
+        simUtils.SendAnnouncement(
+            "The hill activates in " .. math.floor(0.5 * config.hillActiveAt) .. " seconds.",
+            "The hill is activated in " .. math.floor(0.5 * config.hillActiveAt) .. " seconds.",
+            math.floor(0.5 * config.hillActiveAt)
+        );
+    end
 
+    local hillActiveMessageDelay = 0
+    if config.hillActiveAt > 0 then
+      hillActiveMessageDelay = 2
+    end
     simUtils.SendAnnouncementWithVoice(
-        kothConstants.modName,
+        "The hill is now active.",
         "The hill is active.",
-        config.hillActiveAt - 2,
+        config.hillActiveAt - hillActiveMessageDelay,
         "KingOfTheHill",
         "Hill-Active" 
     );
@@ -85,17 +93,9 @@ function KingOfTheHillThread()
     for k, brain in ArmyBrains do 
         ScenarioFramework.CreateVisibleAreaLocation(config.hillRadius * 1.1, config.hillCenter, 0, brain)
     end
-
-    -- WaitSeconds(config.hillActiveAt)
-
-    -- wait until the hill is active
-    while config.hillActiveAt < GetGameTimeSeconds() do 
-        WaitSeconds(0.1)
-
-        --Update UI
-        Sync.SendPlayerPointData = playerTable
-    end
-
+    
+    --Update UI
+    Sync.SendPlayerPointData = playerTable
 
     -- start the clock
     local count = 0
@@ -105,7 +105,6 @@ function KingOfTheHillThread()
 
         count = count + 1 
         if count > 10 then  
-
             -- routines called every 10th tick
 
             -- update information
@@ -175,17 +174,6 @@ function InitialisePlayerTables(brains)
 
     return playerTables
 end 
-
---- Initialises a default hill table.
-function InitialiseHillTable()
-    local hillTable = { } 
-    hillTable.active=false
-    hillTable.commanderOnHill=false
-    hillTable.contested=false
-    hillTable.controlled=false
-    hillTable.identifier=0
-    return hillTable 
-end
 
 --- Filters all the brains available to ensure only brains 
 -- controlled by humans remain.
