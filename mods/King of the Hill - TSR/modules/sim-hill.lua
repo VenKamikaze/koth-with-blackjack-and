@@ -7,6 +7,10 @@ function Tick(config, thresholds, brains)
     return processed, analysed
 end
 
+function canCommanderControlHill(config, commanderOnHill)
+   return (config.kingOfTheHillCommanderControl and commanderOnHill)
+end
+
 --- Computes the amount of mass, number of units and whether there is a 
 -- commander on the hill for each provided brain.
 -- @param config The configuration of the mod.
@@ -84,13 +88,13 @@ function AnalyseHill(config, analyses, thresholds)
     conquerers = { }
     contestants = { }
     for k, analysis in analyses do 
-        canControl = analysis.massOnHill >= thresholds.control or analysis.commanderOnHill
+        canControl = analysis.massOnHill >= thresholds.control or canCommanderControlHill(config, analysis.commanderOnHill)
         if canControl then 
             table.insert(conquerers, analysis)
             table.insert(state.conquerers, analysis.identifier )
         end
 
-        canContest = analysis.massOnHill >= thresholds.contest or analysis.commanderOnHill
+        canContest = analysis.massOnHill >= thresholds.contest or canCommanderControlHill(config, analysis.commanderOnHill)
         if canContest then
             table.insert(contestants, analysis)
             table.insert(state.contestants, analysis.identifier )
@@ -122,7 +126,7 @@ function AnalyseHill(config, analyses, thresholds)
     -- daym, so many hostile commanders on that hill
     if commanderContested then 
         state.controlled = false
-        state.contested = true
+        state.contested = canCommanderControlHill(config, true)
         state.identifier = 0
         return state
     end
@@ -132,7 +136,7 @@ function AnalyseHill(config, analyses, thresholds)
     if commanderCount == 1 then 
         -- only take conquerers with commanders
         for k, player in conquerers do 
-            if player.commanderOnHill then 
+            if canCommanderControlHill(config, player.commanderOnHill) then 
                 controller = player 
             end
         end
@@ -142,7 +146,7 @@ function AnalyseHill(config, analyses, thresholds)
     local potentials = { }
     if commanderCount > 1 and not controller then
         for k, player in conquerers do 
-            if player.commanderOnHill then 
+            if canCommanderControlHill(config, player.commanderOnHill) then 
                 table.insert(potentials, player)
             end
         end

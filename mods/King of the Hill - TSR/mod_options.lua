@@ -300,7 +300,7 @@ options =
                 pref            = 'tsrKothCommanderControlHill',
                 values          = {
             {
-                text = "Yes (default)",
+                text = "Yes",
                 help = "If a commander is present on the hill, it overrides the need for the mass threshold to control or contest the hill.",
                 key = 1,
             },
