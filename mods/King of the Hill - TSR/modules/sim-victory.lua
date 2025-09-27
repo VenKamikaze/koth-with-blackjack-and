@@ -93,7 +93,7 @@ function Tick(config, playerTables)
                         isGameRunning = false 
                         EndGame()
                     end,
-                    5,
+                    20,
                     true
                 );
 
